@@ -4,6 +4,15 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
+// Create http server, and pass it to socket.io
+var server = require('http').createServer(app);
+module.exports.io = require('socket.io')(server);
+var chatController = require('./controllers/ChatController');
+
+// Send all socket connections to chat controller
+module.exports.io.on('connect', chatController);
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -23,4 +32,8 @@ app.use(function (req, res, next) {
 
 routes(app);
 
-app.listen(3000)
+server.listen(3000, function (err) {
+    if (err) throw err;
+    console.log('[*] Server listening on 3000')
+});
+
