@@ -6,15 +6,13 @@ const expect = chai.expect;
 chai.use(chai_http);
 
 describe('Client authorization', () => {
-  //authorization token
   var encryptedAuthorizationToken = "test";
-  var authorizationToken = "test"; //needs to be decrypted
 
   it('Token given by client', (done) => {
-    // encryptedAuthorizationToken.decode().then(() => {
+    // encryptedAuthorizationToken.decode().then((authorizationToken) => {
       chai.request(server)
         .post('/api/authorization')
-        .send(authorizationToken)
+        .send(encryptedAuthorizationToken) //-> authorizationToken
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
