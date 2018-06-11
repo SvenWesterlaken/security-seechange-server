@@ -126,5 +126,7 @@ typings/
 # dotenv environment variables file
 .env
 
+media/
+.idea/
 
 # End of https://www.gitignore.io/api/node,jetbrains
