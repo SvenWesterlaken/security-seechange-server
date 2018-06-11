@@ -1,8 +1,9 @@
 var express = require('express');
 var routes = require('./routes/routes');
 var bodyParser = require('body-parser');
-
+var path = require('path');
 var app = express();
+const config = require('./config/env');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -21,6 +22,14 @@ app.use(function (req, res, next) {
     next();
 });
 
-routes(app);
+//setting a global path to index.js (main file) so it can be used to locate certificates
+global.appRoot = path.resolve(__dirname);
+require('./config/env');
 
-app.listen(3000)
+app.use('/api', routes);
+
+app.listen(config.port, () => {
+  console.log(`Running on port: ${config.port}`);
+});
+
+module.exports = app;
