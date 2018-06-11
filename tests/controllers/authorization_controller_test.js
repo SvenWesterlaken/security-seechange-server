@@ -6,17 +6,15 @@ const expect = chai.expect;
 chai.use(chai_http);
 
 describe('Client authorization', () => {
-  var encryptedAuthorizationToken = "test";
+  var authorizationToken = "fakeToken";
 
   it('Token given by client', (done) => {
-    // encryptedAuthorizationToken.decode().then((authorizationToken) => {
       chai.request(server)
         .post('/api/authorization')
-        .send(encryptedAuthorizationToken) //-> authorizationToken
+        .send(authorizationToken)
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
-      // });
     });
   });
 
