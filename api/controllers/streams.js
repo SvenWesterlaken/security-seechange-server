@@ -19,10 +19,12 @@ function getStreams(req, res, next) {
 			}
 
 			if (session.isPublishing) {
-				_.set(stats, [app, stream, 'publisher'], {
-					app: app,
-					stream: stream,
+				_.set(stats, [app, stream], {
+					streamName: stream,
 					connectedOn: session.connectTime,
+					duration: Math.ceil((Date.now() - session.startTimestamp) / 1000)
+				});
+				_.set(stats, [app, stream, 'specifications'], {
 					audio: session.audioCodec > 0 ? {
 						codec: session.audioCodecName,
 						profile: session.audioProfileName,
