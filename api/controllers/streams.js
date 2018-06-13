@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const crypto = require('crypto');
+const fs = require("fs");
 
 function getStreams(req, res, next) {
 	let stats = {};
@@ -44,7 +46,7 @@ function getStreams(req, res, next) {
 		}
 	});
 
-	res.json(stats);
+	encryptAndSend(res, stats);
 }
 
 function getStream(req, res, next) {
@@ -54,24 +56,41 @@ function getStream(req, res, next) {
 	let publisherSession = this.sessions.get(this.publishers.get(publishStreamPath));
 
 	if (publisherSession) {
-		let streamStats = {
+		let stats = {
 			viewers: 0,
 			duration: 0,
 			bitrate: 0,
 			startTime: null
 		};
 
-		streamStats.viewers = _.filter(Array.from(this.sessions.values()), (session) => {
+		stats.viewers = _.filter(Array.from(this.sessions.values()), (session) => {
 			return session.playStreamPath === publishStreamPath;
-		}).length-1;
-		streamStats.duration = Math.ceil((Date.now() - publisherSession.startTimestamp) / 1000);
-		streamStats.bitrate = streamStats.duration > 0 ? Math.ceil(_.get(publisherSession, ['socket', 'bytesRead'], 0) * 8 / streamStats.duration / 1024) : 0;
-		streamStats.startTime = publisherSession.connectTime;
+		}).length - 1;
+		stats.duration = Math.ceil((Date.now() - publisherSession.startTimestamp) / 1000);
+		stats.bitrate = stats.duration > 0 ? Math.ceil(_.get(publisherSession, ['socket', 'bytesRead'], 0) * 8 / stats.duration / 1024) : 0;
+		stats.startTime = publisherSession.connectTime;
 
-		res.json(streamStats);
+		encryptAndSend(res, stats);
 	} else {
-		res.json({});
+		encryptAndSend(res, {});
 	}
+}
+
+function encryptAndSend(res, json) {
+	fs.readFile('./key.pem', function read(err, data) {
+		if (err) {
+			throw err;
+		}
+		let content = data;
+
+		let hash = crypto.createHash('sha256').update(Buffer.from(JSON.stringify(json))).digest('hex');
+		let digitalSignature = crypto.privateEncrypt(content, Buffer.from(hash, 'utf8'));
+
+		let response = {};
+		response.data = json;
+		response.digitalSignature = digitalSignature;
+		res.json(response);
+	});
 }
 
 exports.getStreams = getStreams;
