@@ -18,11 +18,10 @@ describe('Client authorization', () => {
     });
   });
 
-  it('No token given', (done) => {
+  xit('No token given', (done) => {
     chai.request(server)
       .get('/api')
       .end((err, res) => {
-        console.log(err);
         expect(err).to.be.null;
         expect(res).to.have.status(401);
         done();

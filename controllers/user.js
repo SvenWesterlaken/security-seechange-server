@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
     cb(null, `${appRoot}` + '\\avatars\\') //path where images will be saved
   },
   filename: function (req, file, cb) {
-    cb(null, req.body.username + '-' + dateTime.create().format('Y-m-d_H-M-S')); //saving image as username + server time
+    cb(null, dateTime.create().format('Y-m-d_H-M-S') + '-' + req.body.username); //saving image as username + server time
   }
 })
 
@@ -23,11 +23,11 @@ module.exports = {
         {username: `${username}`}, //username that will be updated
         {$set: req.body}) //information used for updating
         .catch(err => next(err)).then(userDb => {
-      if (userDb) { //user exists
-        res.status(202).send("User updated").catch(next);
-      } else {
-        res.status(204).json({error: "User not found"});
-      }
+        if (userDb) { //user exists
+          res.status(202).json({msg: "User updated"});
+        } else {
+          res.status(204).json({error: "User not found"});
+        }
       }).catch(next);
     }
   },
@@ -57,7 +57,7 @@ module.exports = {
                   console.log("Previous file not available on server"); //no other actions need to be taken, filepath will be overwritten
                 }
               }
-              res.status(202).send("File uploaded")
+              res.status(202).json("File uploaded")
             } else {
               res.status(204).json({error: "User not found"});
             }
