@@ -5,8 +5,7 @@ const dateTime = require('node-datetime');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // cb(null, `${appRoot}` + '\\avatars\\')
-    cb(null, 'C:\\Users\\Maikel\\Documents\\test') //path where images will be saved
+    cb(null, `${appRoot}` + '\\avatars\\') //path where images will be saved
   },
   filename: function (req, file, cb) {
     cb(null, req.body.username + '-' + dateTime.create().format('Y-m-d_H-M-S')); //saving image as username + server time

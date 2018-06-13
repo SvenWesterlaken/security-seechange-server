@@ -5,6 +5,6 @@ const user = require('../controllers/user');
 
 // router.all('*', authorization.authorize);
 router.post('/user/update', user.update);
-router.post('user/avatar', user.setAvatar);
+router.post('/user/avatar', user.setAvatar);
 
 module.exports = router;

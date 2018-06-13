@@ -4,7 +4,7 @@ const fs = require('fs');
 const https = require('https');
 const User = require('../models/user');
 
-var instance = axios.create({
+var instance = axios.create({ //self-signed certificate probably does not work - api for testing not available yet
   url: 'http://httpbin.org/user-agent', //config.truYou_api - will be added when available
   httpsAgent: new https.Agent({ //user agent is used to act on behalf of SeeChange, it gives extra information to the receiver so it can assess the capabilities of the sender
     // ca: fs.readFileSync(`${config.signature}.CA`, "utf8"), //not used, certificate is self-signed
