@@ -1,17 +1,15 @@
-var express = require('express');
-var routes = require('./routes/routes');
-var bodyParser = require('body-parser');
-
-var app = express();
+const express = require('express');
+const routes = require('./routes/routes');
+const bodyParser = require('body-parser');
+const app = express();
 
 // Create http server, and pass it to socket.io
-var server = require('http').createServer(app);
+const server = require('http').createServer(app);
 module.exports.io = require('socket.io')(server);
-var chatController = require('./controllers/ChatController');
+const chatController = require('./controllers/ChatController');
 
 // Send all socket connections to chat controller
 module.exports.io.on('connect', chatController);
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -34,6 +32,39 @@ routes(app);
 
 server.listen(3000, function (err) {
     if (err) throw err;
-    console.log('[*] Server listening on 3000')
+    console.log('\n' +
+        '            :+@@@                                                       \n' +
+        '         #@@@@@@@.                                                      \n' +
+        '       @@@@+.  ,@.                                                      \n' +
+        '     ,@@@`     ,@.                                                      \n' +
+        '    ;@@,       ,@.                                                      \n' +
+        '   :@@         ,@.                                                      \n' +
+        '   @@          `@`                                                      \n' +
+        '  @@`                                                                   \n' +
+        ' ,@#            +                                                       \n' +
+        ' @@            @@@                                                      \n' +
+        ' @@           @@`@@         @@#            \'@@` @`                      \n' +
+        '.@:          @@  `@@       @+ #@          :@ .@ @`                      \n' +
+        '\'@`         @@  : `@@      @@    @@@` @@@ @;  . @@@@ #@@# @@@# @@@@ +@@#\n' +
+        '#@         @@  @@@ `@@      +@@ ;@ \'### #;@:    @` @   .@ @ `@ @  @ @  @\n' +
+        '#@         @@  @@@ `@@     ,  +@+@++\'@#++;@\'  \'`@` @ @\',@ @ `@ @  @ @+++\n' +
+        '\'@`         @@  : `@@      @#.@#`@,;.:@.+`,@,\'@ @` @ @:+@ @ `@ @;;@ @#.@\n' +
+        '.@:          @@  `@@        ;#;  .#\'  ,#;  .#\'  +` + .#.+ + `+ `#,@  \'+`\n' +
+        ' @@           @@`@@                                            @+@@     \n' +
+        ' @@            @@@                                              ,.      \n' +
+        ' ,@#            +                                                       \n' +
+        '  @@`                                                                   \n' +
+        '   @@          `@`                                                      \n' +
+        '   :@@         ,@.                                                      \n' +
+        '    ;@@,       ,@.                                                      \n' +
+        '     ,@@@`     ,@.                                                      \n' +
+        '       @@@@+.  ,@.                                                      \n' +
+        '         #@@@@@@@.                                                      \n' +
+        '            :+@@@                                                       \n' +
+        '\n')
 });
+
+module.exports = {
+    server
+};
 

@@ -1,11 +1,16 @@
-var chai = require('chai');
-var mocha = require('mocha');
-var Assert = require('supertest');
-var io = require('socket.io-client');
+const Assert = require('supertest');
+const io = require('socket.io-client');
+const fs = require('fs');
+const crypto = require('crypto');
+const nock = require('nock');
+
+const pubkeyBob = fs.readFileSync('./test_keys/bob/pubkey.pem');
+const privkeyBob = fs.readFileSync('./test_keys/bob/privkey.pem');
 
 describe("Chat test", function() {
 
-    var server,
+
+    let server,
         options ={
             transports: ['websocket'],
             'force new connection': true
@@ -18,11 +23,71 @@ describe("Chat test", function() {
         done();
     });
 
+    afterEach(function (done) {
+
+        done();
+    });
+
+    it('can authenticate', (done) => {
+
+        var scope = nock('http://www.example.com')
+            .get('/pubkey')
+            .reply(200, {"pubkey": pubkeyBob.toString()});
+
+       const client = io.connect('http://localhost:3000', options);
+
+       client.once('connect', () => {
+            client.once("authenticate", (message) => {
+                Assert(message === "Success");
+
+                client.disconnect();
+                done();
+            });
+
+            client.once("error", (message) => {
+                console.log(message);
+                Assert(false);
+
+                client.disconnect();
+                done();
+            })
+       });
+
+       // Generate Hash
+       const hash = crypto.createHash('sha256').update("Bob").digest('hex');
+       let buffer = new Buffer(hash);
+       let cipher = crypto.privateEncrypt(privkeyBob, buffer).toString("base64");
+       client.emit("authenticate", "Bob", cipher)
+    });
+
     it('can pass on messages', function(done) {
-        var client = io.connect("http://localhost:3000", options);
+
+        var scope = nock('http://www.example.com')
+            .get('/pubkey')
+            .reply(200, {"pubkey": pubkeyBob.toString()});
+
+        const client = io.connect("http://localhost:3000", options);
 
         // Connect client to server
         client.once("connect", function () {
+
+            client.once("authenticate", (message) => {
+
+                // Generate message Hash
+                const hash = crypto.createHash('sha256').update(username).digest('hex');
+                let buffer = new Buffer(hash);
+                let msgCipher = crypto.privateEncrypt(privkeyBob, buffer).toString("base64");
+
+                // Generate subscribe has
+                const hash2 = crypto.createHash('sha256').update(id).digest('hex');
+                let buffer2 = new Buffer(hash2);
+                let idCipher = crypto.privateEncrypt(privkeyBob, buffer2).toString("base64");
+
+                // subscribe to test room, and send message.
+                client.emit("subscribe", id, idCipher );
+                client.emit("chat message", id, username, "Hello World", msgCipher);
+            });
+
             // Once a chat message comes in validate it. then disconnect
             client.once("chat message", function (user, message) {
                 Assert(message === "Hello World");
@@ -31,9 +96,23 @@ describe("Chat test", function() {
                 done();
             });
 
-            // subscribe to test room, and send message.
-            client.emit("subscribe", "test");
-            client.emit("chat message", "test", "Test user", "Hello World");
+            client.once("error", (message) => {
+                Assert(false);
+                console.log(message);
+                client.disconnect();
+                done();
+            });
+
+            let id = "test";
+            let username = "Bob";
+
+
+
+            const authHash = crypto.createHash('sha256').update("Bob").digest('hex');
+            let authBuffer = new Buffer(authHash);
+            let cipher = crypto.privateEncrypt(privkeyBob, authBuffer).toString("base64");
+
+            client.emit("authenticate", "Bob", cipher);
         });
     })
-})
+});
