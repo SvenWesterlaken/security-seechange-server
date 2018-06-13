@@ -7,6 +7,8 @@ const nock = require('nock');
 const pubkeyBob = fs.readFileSync('./test_keys/bob/pubkey.pem');
 const privkeyBob = fs.readFileSync('./test_keys/bob/privkey.pem');
 
+const Chat = require('../models/chatMessage');
+
 describe("Chat test", function() {
 
 
@@ -24,7 +26,9 @@ describe("Chat test", function() {
     });
 
     afterEach(function (done) {
-
+        Chat.findOneAndRemove({message: "Hello World", username: "Bob", chatroom: "test"})
+            .then((response) => {})
+            .catch(err => console.log(err));
         done();
     });
 
