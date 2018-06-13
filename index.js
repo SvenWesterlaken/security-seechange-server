@@ -3,10 +3,15 @@ var routes = require('./routes/routes');
 var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
+const db = require('./db/database');
 const config = require('./config/env');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json( {limit: `50mb`}));
+
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
@@ -22,10 +27,12 @@ app.use(function (req, res, next) {
     next();
 });
 
+process.env.NODE_ENV !== 'test' ? db.start() : null;
+
 //setting a global path to index.js (main file) so it can be used to locate certificates
 global.appRoot = path.resolve(__dirname);
 require('./config/env');
-
+// console.log(appRoot);
 app.use('/api', routes);
 
 app.listen(config.port, () => {

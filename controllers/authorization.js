@@ -2,6 +2,7 @@ const config = require('../config/env');
 const axios = require('axios');
 const fs = require('fs');
 const https = require('https');
+const User = require('../models/user');
 
 var instance = axios.create({
   url: 'http://httpbin.org/user-agent', //config.truYou_api - will be added when available
@@ -22,6 +23,20 @@ module.exports = {
     if (authorizationToken != ''){
       const truYou_config = {params: { token: authorizationToken }};
       instance.get(truYouApi, truYou_config).catch(err => next(err)).then(response => {
+        if (response.status === 200){ //token has been verified
+          var username = response.data.username;
+
+          if(username !== undefined || null || '') { //Bad response will not create new documents
+            User.findOneAndUpdate( //checking if user has already used SeeChanged (exists in database)
+              {username: `${username}`},
+              {$setOnInsert: {publicName: `${username}`}}, //if user is new, set public name to username
+              {new: true, upsert: true})  // return new doc if one is upserted, upsert a document if it doesnt exist
+              .catch(err => next(err)).then(user => {
+              console.log(user)
+            });
+          }
+        }
+
         res.status(response.status).send(response.data); //TruYou will validate the token, SeeChange only redirects the status and data that is given in the response
       });
     } else {
