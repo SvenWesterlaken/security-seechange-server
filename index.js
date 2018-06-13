@@ -2,7 +2,9 @@ const express = require('express');
 const routes = require('./routes/routes');
 const bodyParser = require('body-parser');
 const app = express();
-
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+const connection = require('./config/mongo.db');
 // Create http server, and pass it to socket.io
 const server = require('http').createServer(app);
 module.exports.io = require('socket.io')(server);

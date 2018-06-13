@@ -3,6 +3,8 @@ const request = require('request');
 const crypto = require('crypto');
 const fs =require('fs');
 
+const Chat = require('../models/chatMessage');
+
 module.exports = (client) => {
     console.log("[*] Client connected");
 
@@ -42,9 +44,18 @@ module.exports = (client) => {
 
     // chat message subject: send a roomID, username and message.
     // then emits it it to all other sockets in the room.
-    client.on('chat message', (id, username, msg, hash) => {
+    client.on('chat message', (id, username, msg, hash, timestamp) => {
         if(checkHash(hash, username)) {
-            io.to(id).emit('chat message', username, msg);
+            io.to(id).emit('chat message', username, msg, timestamp);
+            Chat.create({
+                username: username,
+                chatroom: id,
+                message: msg,
+                timeStamp: timestamp,
+                hash: hash
+            })
+                .then((message)=>{})
+                .catch(err => console.log(err));
         } else {
             client.emit('error', 'Incorrect Hash');
         }

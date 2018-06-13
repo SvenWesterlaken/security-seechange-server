@@ -85,7 +85,7 @@ describe("Chat test", function() {
 
                 // subscribe to test room, and send message.
                 client.emit("subscribe", id, idCipher );
-                client.emit("chat message", id, username, "Hello World", msgCipher);
+                client.emit("chat message", id, username, "Hello World", msgCipher, Date.now());
             });
 
             // Once a chat message comes in validate it. then disconnect
