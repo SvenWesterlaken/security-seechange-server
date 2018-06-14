@@ -1,7 +1,7 @@
 
-# Created by https://www.gitignore.io/api/node,intellij,webstorm
+# Created by https://www.gitignore.io/api/node,jetbrains
 
-### Intellij ###
+### JetBrains ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
@@ -57,7 +57,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-### Intellij Patch ###
+### JetBrains Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
 # *.iml
@@ -128,45 +128,7 @@ typings/
 # dotenv environment variables file
 .env
 
-### WebStorm ###
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+media/
+.idea/
 
-# User-specific stuff:
-
-# Sensitive or high-churn files:
-
-# Gradle:
-
-# CMake
-
-# Mongo Explorer plugin:
-
-## File-based project format:
-
-## Plugin-specific files:
-
-# IntelliJ
-
-# mpeltonen/sbt-idea plugin
-
-# JIRA plugin
-
-# Cursive Clojure plugin
-
-# Ruby plugin and RubyMine
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-
-### WebStorm Patch ###
-# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
-
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
-
-# Sonarlint plugin
-
-
-# End of https://www.gitignore.io/api/node,intellij,webstorm
+# End of https://www.gitignore.io/api/node,jetbrains
