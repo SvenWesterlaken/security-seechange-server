@@ -7,7 +7,7 @@ if (result.error) {
   throw result.error;
 }
 
-env.truYou_api = process.env.TRUYOU_API || '';
+env.truYou_api = process.env.TRUYOU_API || 'http://localhost:8080/api';
 
 env.mongo = {
   host: process.env.MONGO_HOST || 'mongodb://127.0.0.1',
