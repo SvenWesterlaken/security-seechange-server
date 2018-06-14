@@ -77,7 +77,7 @@ function getStream(req, res, next) {
 }
 
 function encryptAndSend(res, json) {
-	fs.readFile('./key.pem', function read(err, data) {
+	fs.readFile('./certificates/key.pem', function read(err, data) {
 		if (err) {
 			throw err;
 		}
