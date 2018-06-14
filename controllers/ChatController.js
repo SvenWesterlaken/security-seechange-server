@@ -2,6 +2,7 @@ const io = require('../index').io;
 const request = require('request');
 const crypto = require('crypto');
 const fs =require('fs');
+const env = require('../config/env/env').env;
 
 const Chat = require('../models/chatMessage');
 
@@ -9,9 +10,15 @@ module.exports = (client) => {
     console.log("[*] Client connected");
 
     let pubkey; //  = fs.readFileSync('./test_keys/bob/pubkey.pem').toString();
-    client.on('authenticate', (username, hash) => {
+    client.on('authenticate', (username, hash, token) => {
         // get public key from TruYou server
-        request.get('http://www.example.com/pubkey', (err, response, body) => {
+        const options = {
+            url: env.truYou_api+'/api/v1/login/users/'+username,
+            headers: {
+                'token': token
+            }
+        }
+        request.get(options, (err, response, body) => {
             if(err) {
                 // If there's an error log it, and notify the user.
                 console.log(err);
@@ -20,9 +27,8 @@ module.exports = (client) => {
                 client.disconnect();
                 return;
             }
-
             const o = JSON.parse(body);
-            pubkey = o.pubkey.toString();
+            pubkey = o.publicKey.toString();
 
             // Check Hash
             if(checkHash(hash, username)) {
