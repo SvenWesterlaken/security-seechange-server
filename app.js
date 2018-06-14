@@ -1,4 +1,4 @@
-const NodeMediaServer = require('./node_media_server');
+const NodeMediaServer = require('./streaming/node_media_server');
 
 const config = {
 	rtmp: {
@@ -11,11 +11,11 @@ const config = {
 	http: {
 		port: 8000,
 		webroot: './public',
-		mediaroot: './media',
+		mediaroot: './streaming/media',
 		allow_origin: '*'
 	},
 	trans: {
-		ffmpeg: '.\\ffmpeg\\ffmpeg.exe',
+		ffmpeg: '.\\streaming\\ffmpeg\\ffmpeg.exe',
 		tasks: [
 			{
 				app: 'live',
