@@ -1,40 +1,51 @@
 const express = require('express');
 const routes = require('./routes/routes');
 const bodyParser = require('body-parser');
+const path = require('path');
 const app = express();
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-const connection = require('./config/mongo.db');
-// Create http server, and pass it to socket.io
+const db = require('./db/database');
+const config = require('./config/env');
 const server = require('http').createServer(app);
+// Create http server, and pass it to socket.io
 module.exports.io = require('socket.io')(server);
 const chatController = require('./controllers/ChatController');
 
+//setting a global path to index.js (main file) so it can be used to locate certificates
+global.appRoot = path.resolve(__dirname);
+if (process.env.NODE_ENV === 'test') {
+  appRoot += "\\test";
+}
 // Send all socket connections to chat controller
 module.exports.io.on('connect', chatController);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+// var certificate  = fs.readFileSync(`${appRoot}` + '\\certificates\\certificate.pem', 'utf8'); self-signed certificate not working
+// var privateKey = fs.readFileSync(`${appRoot}` + '\\certificates\\key.pem', 'utf8');
+// var credentials = {key: privateKey, cert: certificate};
+// const server = require('https').createServer(credentials, app);
+
+app.use(bodyParser.json({limit: '50mb'})); //max file size
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.use(function (req, res, next) {
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    // Pass to next layer of middleware
-    next();
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  // Pass to next layer of middleware
+  next();
 });
 
-routes(app);
+process.env.NODE_ENV !== 'test' ? db.start() : null;
+app.use('/api', routes);
 
-server.listen(3000, function (err) {
-    if (err) throw err;
-    console.log('\n' +
+server.listen(config.port, () => {
+  console.log(`Running on port: ${config.port}`);
+  console.log('\n' +
         '            :+@@@                                                       \n' +
         '         #@@@@@@@.                                                      \n' +
         '       @@@@+.  ,@.                                                      \n' +
@@ -66,7 +77,4 @@ server.listen(3000, function (err) {
         '\n')
 });
 
-module.exports = {
-    server
-};
-
+module.exports = server;
