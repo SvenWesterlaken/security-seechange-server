@@ -10,8 +10,12 @@ const env = {
 
 result = dotenv.config();
 
-if (result.error) {
-  throw result.error;
+if (process.env.NODE_ENV === 'test') {
+    result = dotenv.config();
+
+    if (result.error) {
+        throw result.error;
+    }
 }
 
 const link = process.env.NODE_ENV === 'production' ?
