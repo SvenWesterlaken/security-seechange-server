@@ -6,6 +6,7 @@ node_js:
   - "5"
   - "4"
 before_script:
+  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
   - npm install chai chai-http mocha
   - npm install
 after_success:
@@ -13,3 +14,5 @@ after_success:
   - npm run sonar
 script:
   - npm test
+services:
+  - mongodb
