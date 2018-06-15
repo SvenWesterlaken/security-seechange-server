@@ -114,7 +114,7 @@ describe('Modifying avatar image', () => {
       .then((userDb) => {
         chai.request(server)
           .put(`/api/user/avatar`)
-          .send({username : userDb.username})
+          .send({username: userDb.username})
           .end((err, res) => {
             expect(err).to.be.null;
             expect(res).to.have.status(422);

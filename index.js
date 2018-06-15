@@ -1,12 +1,24 @@
-var express = require('express');
-var routes = require('./routes/routes');
-var bodyParser = require('body-parser');
-var path = require('path');
-var app = express();
+const express = require('express');
+const routes = require('./routes/routes');
+const bodyParser = require('body-parser');
+const path = require('path');
+const app = express();
 const db = require('./db/database');
 const config = require('./config/env');
+const server = require('http').createServer(app);
 
-app.use(bodyParser.json({limit: '50mb'}));
+//setting a global path to index.js (main file) so it can be used to locate certificates
+global.appRoot = path.resolve(__dirname);
+if (process.env.NODE_ENV === 'test') {
+  appRoot += "\\test";
+}
+
+// var certificate  = fs.readFileSync(`${appRoot}` + '\\certificates\\certificate.pem', 'utf8'); self-signed certificate not working
+// var privateKey = fs.readFileSync(`${appRoot}` + '\\certificates\\key.pem', 'utf8');
+// var credentials = {key: privateKey, cert: certificate};
+// const server = require('https').createServer(credentials, app);
+
+app.use(bodyParser.json({limit: '50mb'})); //max file size
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.use(function (req, res, next) {
@@ -24,18 +36,10 @@ app.use(function (req, res, next) {
 });
 
 process.env.NODE_ENV !== 'test' ? db.start() : null;
-
-//setting a global path to index.js (main file) so it can be used to locate certificates
-global.appRoot = path.resolve(__dirname);
-if (process.env.NODE_ENV === 'test') {
-  appRoot += "\\test";
-}
-
-// console.log(appRoot);
 app.use('/api', routes);
 
-app.listen(config.port, () => {
+server.listen(config.port, () => {
   console.log(`Running on port: ${config.port}`);
 });
 
-module.exports = app;
+module.exports = server;

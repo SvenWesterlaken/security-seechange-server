@@ -17,17 +17,16 @@ describe('Client authorization', () => {
     });
 
   xit('Token given by client', (done) => {
-      chai.request(server)
-        // console.log(server)
-        .get('/api')
-        .set({Token: `tokendoesntmatterfortesting`})
-        .send(authorizationToken)
-        .end((err, res) => {
-          expect(err).to.be.null;
-          expect(res).to.have.status(200);
-          expect(res.body).to.include({username:'streamer1337'});
-          done();
-    });
+    chai.request(server)
+      .get('/api')
+      .set({Token: `tokendoesntmatterfortesting`})
+      .send(authorizationToken)
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        expect(res.body).to.include({username: 'streamer1337'});
+        done();
+      });
   });
 
   xit('No token given', (done) => {

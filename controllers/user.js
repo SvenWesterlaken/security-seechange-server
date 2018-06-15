@@ -13,7 +13,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage: storage}).single('avatar');
-
 module.exports = {
 
   getInfo(req, res, next) {
@@ -57,7 +56,7 @@ module.exports = {
     if (username !== "" && publicName !== "") {
       User.findOneAndUpdate(
         {username: `${username}`}, //username that will be updated
-        {$set: {publicName: publicName} }) //information used for updating
+        {$set: {publicName: publicName}}) //information used for updating
         .catch(err => next(err)).then(userDb => {
         if (userDb) { //user exists
           res.status(202).json({msg: "Public name updated"});
@@ -76,7 +75,7 @@ module.exports = {
     if (username !== "" && slogan !== "") {
       User.findOneAndUpdate(
         {username: `${username}`}, //username that will be updated
-        {$set: {slogan: slogan} }) //information used for updating
+        {$set: {slogan: slogan}}) //information used for updating
         .catch(err => next(err)).then(userDb => {
         if (userDb) { //user exists
           res.status(202).json({msg: "Slogan updated"});
