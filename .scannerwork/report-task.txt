@@ -1,0 +1,7 @@
+organization=matsgemmeke-github
+projectKey=seechange
+serverUrl=https://sonarcloud.io
+serverVersion=7.2.0.12953
+dashboardUrl=https://sonarcloud.io/dashboard/index/seechange
+ceTaskId=AWQDPjtD6E79xp0PyDX8
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AWQDPjtD6E79xp0PyDX8
