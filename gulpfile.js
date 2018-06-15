@@ -6,7 +6,7 @@ const mocha = require('gulp-mocha');
 
 gulp.task('sonarqube', ['test'], function(callback) {
     sonarqubeScanner({
-        serverUrl: "https://sonarqube.com",
+        serverUrl: "https://sonarcloud.io",
         options: {
             "sonar.organization": "matsgemmeke-github",
             "sonar.projectKey": "seechange",
@@ -15,7 +15,7 @@ gulp.task('sonarqube', ['test'], function(callback) {
             "sonar.working.directory": "./.sonar",
             "sonar.tests": "test",
             "sonar.javascript.lcov.reportPath": "coverage/lcov.info",
-            "sonar.exclusions": "gulpfile.js, .gitignore, *.md, *.yml, *.sql, *.txt, *.json, node_modules/**, coverage/**, test/**",
+            "sonar.exclusions": "gulpfile.js, .gitignore, *.md, *.yml, *.sql, *.txt, *.json, node_modules/**, coverage/**",
             "sonar.verbose": "true"
         }
     }, callback);
