@@ -22,7 +22,7 @@ gulp.task('sonarqube', ['test'], function(callback) {
 });
 
 gulp.task('test', ['pre-test'], function() {
-    return gulp.src(['test_genAuth.js'])
+    return gulp.src(['test/*.js'])
         .pipe(mocha())
         .pipe(istanbul.writeReports());
 });

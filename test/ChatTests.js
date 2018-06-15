@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const nock = require('nock');
 
 const pubkeyBob = fs.readFileSync('./test_keys/bob/pubkey.pem');
-const privkeyBob = fs.readFileSync('./test_keys/bob/    privkey.pem');
+const privkeyBob = fs.readFileSync('./test_keys/bob/privkey.pem');
 
 const Chat = require('../models/chatMessage');
 
