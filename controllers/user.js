@@ -2,13 +2,13 @@ const User = require('../models/user');
 const multer = require('multer')
 const fs = require('fs');
 const dateTime = require('node-datetime');
-
+var username;
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, `${appRoot}` + '\\avatars\\') //path where images will be saved
   },
   filename: function (req, file, cb) {
-    cb(null, dateTime.create().format('Y-m-d_H-M-S') + '-' + req.body.username + '.png'); //saving image as username + server time
+    cb(null, dateTime.create().format('Y-m-d_H-M-S') + '-' + username + '.png'); //saving image as username + server time
   }
 });
 
@@ -38,13 +38,13 @@ module.exports = {
       User.findOne(
         {username: `${username}`}) // information that will not be send
         .catch(err => next(err)).then(userDb => {
-        if (userDb) {
-          // res.status(202).sendFile(userDb.imagePath); //send image directly
-          var cutString = 'seechange-server';
-          var staticPath = userDb.imagePath.split(cutString).pop();
-          res.status(202).json(staticPath);
+        if (userDb && userDb.imagePath) {
+          res.status(202).sendFile(userDb.imagePath); //send image directly
+          // var cutString = 'seechange-server'; //relative path
+          // var staticPath = userDb.imagePath.split(cutString).pop();
+          // res.status(202).json(staticPath);
         } else {
-          res.status(204).json({error: "User not found"});
+          res.status(204).json({error: "Image not available"});
         }
       }).catch(next);
     } else {
@@ -91,16 +91,18 @@ module.exports = {
   },
 
   setAvatar(req, res, next) {
-    try {
-      upload(req, res, function (err) {
-        const username = req.body.username || "";
-        if (username !== "") {
+    username = req.header('X-Username') || '';
+    if (username !== "") {
+      try {
+        upload(req, res, function (err) {
+          // const username = req.header('Username') || '';
+          // const username = req.body.username || "";
+
           if (req.file !== undefined) {
             if (err) {
               console.log(err);
               res.status(400).json({error: "Error uploading file."});
             }
-            console.log(res.req.file.path);
             var imagePath = res.req.file.path || "";
             if (imagePath !== "") {
               User.findOneAndUpdate(
@@ -126,13 +128,13 @@ module.exports = {
           } else {
             res.status(422).json({error: "Invalid file format"});
           }
-        } else {
-          res.status(400).json({error: "Invalid username"});
-        }
-      });
-    } catch (error) {
-      res.status(422).json({error: "Error uploading file"});
-      throw error;
+        });
+      } catch (error) {
+        res.status(422).json({error: "Error uploading file"});
+        throw error;
+      }
+    } else {
+      res.status(400).json({error: "Invalid username"});
     }
   }
 };

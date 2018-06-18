@@ -22,7 +22,7 @@ const link = process.env.NODE_ENV === 'production' ?
   'mongodb://' + env.dbUser + ':' + env.dbPassword + '@' + env.dbHost + ':' + env.dbPort + '/' + env.dbDatabase :
   'mongodb://localhost/' + env.dbDatabase;
 
-env.truYou_api = process.env.TRUYOU_API || 'http://localhost:8080/api';
+env.truYou_api = process.env.TRUYOU_API || 'http://localhost:3000/api/v1';
 
 env.mongo = {
   host: process.env.MONGO_HOST || 'mongodb://127.0.0.1',

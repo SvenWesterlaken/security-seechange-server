@@ -3,7 +3,7 @@ const router = express.Router();
 const authorization = require('../controllers/authorization');
 const user = require('../controllers/user');
 
-// router.all('*', authorization.authorize); //inactive - no certificate
+router.all('*', authorization.authorize); //inactive - no certificate
 router.get('/user/avatar', user.getAvatar);
 router.get('/user/info', user.getInfo); //slogan + public name combined
 
