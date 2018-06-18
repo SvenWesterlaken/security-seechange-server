@@ -4,15 +4,24 @@ const server = require('../../index');
 const expect = chai.expect;
 const User = require('../../models/user');
 const fs = require('fs');
-
+const config = require('../../config/env');
+var mockAdapter = require('axios-mock-adapter');
+var axios = require('axios');
 chai.use(chai_http);
 
 describe('Modifying user', () => {
+  var mock = new mockAdapter(axios);
+
+  mock.onAny(`${config.truYou_api}` + '/verify/streamer1338').reply(200, {
+    username: 'streamer1338'
+  });
 
   const testUser = new User({
-    username: 'streamer1338,',
+    username: 'streamer1338',
     publicName: 'streamer1337'
   });
+
+  var authorizationToken = "token123";
 
   it('Updating user public name successful', (done) => {
     User.create(testUser)
@@ -20,6 +29,7 @@ describe('Modifying user', () => {
         userDb.publicName = "goodstreamer132";
         chai.request(server)
           .put(`/api/user/publicname`)
+          .set({Token: `${authorizationToken}`})
           .send(userDb)
           .end((err, res) => {
             expect(err).to.be.null;
@@ -32,7 +42,7 @@ describe('Modifying user', () => {
 
   it('Updating user slogan unsuccessful', (done) => {
     const testUser = new User({
-      username: 'streamer1338,',
+      username: 'streamer1338',
       publicName: 'streamer1337'
     });
     User.create(testUser)
@@ -40,6 +50,7 @@ describe('Modifying user', () => {
         userDb.slogan = "";
         chai.request(server)
           .put(`/api/user/slogan`)
+          .set({Token: `${authorizationToken}`})
           .send(userDb)
           .end((err, res) => {
             expect(err).to.be.null;
@@ -47,18 +58,6 @@ describe('Modifying user', () => {
             expect(res.body).to.include({error: "Missing information needed to fulfill request"});
             done();
           });
-      });
-  });
-
-  it('Updating not existing user', (done) => { //different api endpoints, needs to be updated.
-    testUser.slogan = "BestStreamEver";
-    chai.request(server)
-      .put(`/api/user/slogan`)
-      .send(testUser)
-      .end((err, res) => {
-        expect(err).to.be.null;
-        expect(res).to.have.status(204);
-        done();
       });
   });
 });
@@ -70,13 +69,16 @@ describe('Modifying avatar image', () => {
     publicName: 'streamer1337'
   });
 
+  var authorizationToken = "token123";
+
   it('Updating existing avatar', (done) => {
     testUser.imagePath = `${appRoot}` + '\\avatars\\Old_Image'; //set path to old image
     User.create(testUser)
       .then((userDb) => {
         chai.request(server)
           .put(`/api/user/avatar`)
-          .field('username', `${userDb.username}`)
+          .set('X-Username', 'streamer1338')
+          .set({Token: `${authorizationToken}`})
           .attach('avatar', `${appRoot}` + '\\avatars\\New_Image', 'New_Image') //image used for uploading
           .end((err, res) => {
             expect(err).to.be.null;
@@ -114,6 +116,8 @@ describe('Modifying avatar image', () => {
       .then((userDb) => {
         chai.request(server)
           .put(`/api/user/avatar`)
+          .set('X-Username', 'streamer1338')
+          .set({Token: `${authorizationToken}`})
           .send({username: userDb.username})
           .end((err, res) => {
             expect(err).to.be.null;
