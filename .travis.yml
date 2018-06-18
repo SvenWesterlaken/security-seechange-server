@@ -1,18 +1,3 @@
 language: node_js
 node_js:
   - "node"
-  - "7"
-  - "6"
-  - "5"
-  - "4"
-before_script:
-  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
-  - npm install chai chai-http mocha
-  - npm install
-after_success:
-  - npm install gulp gulp-mocha gulp-istanbul run-sequence sonarqube-scanner
-  - npm run sonar
-script:
-  - npm test
-services:
-  - mongodb
