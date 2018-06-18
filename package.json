@@ -4,7 +4,7 @@
   "description": "A Node.js implementation of RTMP Server",
   "main": "node_media_server.js",
   "scripts": {
-    "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner.bat"
+    "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner.bat",
     "start": "nodemon",
     "test": "set NODE_ENV=test&& nodemon --exec mocha --recursive"
   },
