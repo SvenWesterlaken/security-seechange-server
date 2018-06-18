@@ -5,23 +5,23 @@ const path = require('path');
 const app = express();
 const db = require('./db/database');
 const config = require('./config/env');
-const server = require('http').createServer(app);
-// Create http server, and pass it to socket.io
-module.exports.io = require('socket.io')(server);
-const chatController = require('./controllers/ChatController');
-
+const fs = require('fs');
 //setting a global path to index.js (main file) so it can be used to locate certificates
 global.appRoot = path.resolve(__dirname);
 if (process.env.NODE_ENV === 'test') {
   appRoot += "\\test";
 }
+const server = require('http').createServer(app); //insecure
+// const certificate  = fs.readFileSync(`${appRoot}` + '\\certificates\\certificate.pem', 'utf8'); //self-signed certificate has to be accepted for https
+// const privateKey = fs.readFileSync(`${appRoot}` + '\\certificates\\key.pem', 'utf8');
+// const credentials = {key: privateKey, cert: certificate};
+// const server = require('https').createServer(credentials, app);
+// Create http server, and pass it to socket.io
+module.exports.io = require('socket.io')(server);
+const chatController = require('./controllers/ChatController');
+
 // Send all socket connections to chat controller
 module.exports.io.on('connect', chatController);
-
-// var certificate  = fs.readFileSync(`${appRoot}` + '\\certificates\\certificate.pem', 'utf8'); self-signed certificate not working
-// var privateKey = fs.readFileSync(`${appRoot}` + '\\certificates\\key.pem', 'utf8');
-// var credentials = {key: privateKey, cert: certificate};
-// const server = require('https').createServer(credentials, app);
 
 app.use(bodyParser.json({limit: '50mb'})); //max file size
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
@@ -42,6 +42,7 @@ app.use(function (req, res, next) {
 
 process.env.NODE_ENV !== 'test' ? db.start() : null;
 app.use('/api', routes);
+app.use("/api/avatars", express.static(__dirname + '/avatars')); //images in avatar directory are accessible directly
 
 server.listen(config.port, () => {
   console.log(`Running on port: ${config.port}`);

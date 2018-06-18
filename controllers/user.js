@@ -39,8 +39,10 @@ module.exports = {
         {username: `${username}`}) // information that will not be send
         .catch(err => next(err)).then(userDb => {
         if (userDb) {
-          // res.status(202).sendFile(userDb.imagePath);
-          res.status(202).json(userDb.imagePath);
+          // res.status(202).sendFile(userDb.imagePath); //send image directly
+          var cutString = 'seechange-server';
+          var staticPath = userDb.imagePath.split(cutString).pop();
+          res.status(202).json(staticPath);
         } else {
           res.status(204).json({error: "User not found"});
         }
