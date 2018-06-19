@@ -9,12 +9,12 @@ const fs = require('fs');
 //setting a global path to index.js (main file) so it can be used to locate certificates
 global.appRoot = path.resolve(__dirname);
 if (process.env.NODE_ENV === 'test') {
-  appRoot += "\\test";
+  appRoot += "/test";
 }
 // const server = require('http').createServer(app); //insecure
-const authority = fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.crt', "utf8");
-const certificate = fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.crt', "utf8");
-const privateKey = fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.key', "utf8");
+const authority = fs.readFileSync(`${global.appRoot}` + '/certificates/SeeChangeCA.crt', "utf8");
+const certificate = fs.readFileSync(`${global.appRoot}` + '/certificates/SeeChangeCA.crt', "utf8");
+const privateKey = fs.readFileSync(`${global.appRoot}` + '/certificates/SeeChangeCA.key', "utf8");
 const credentials = {key: privateKey, cert: certificate, ca: authority};
 const server = require('https').createServer(credentials, app);
 // Create http server, and pass it to socket.io
