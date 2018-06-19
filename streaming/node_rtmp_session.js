@@ -566,39 +566,7 @@ class NodeRtmpSession {
 		}
 		let payload = this.parserPacket.payload.slice(0, this.parserPacket.header.length);
 
-		let payloadCopy = this.parserPacket.payload;
-
-		console.log(payloadCopy.toString('hex'))
-
-		// Create hash from data
-		let hash = crypto.createHash('sha256').update(payloadCopy).digest('hex');
-
-		// Get index of hash in array
-		let indexOfHash = hashes.indexOf(hash);
-
-		console.log("======== Data ========");
-		console.log("Hash: " + hash);
-		console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
-
-		if(indexOfHash === -1 && hashes.length >= 10) {
-			// Hash is not in array and array is longer then 10 items long
-			// Time to stop the stream
-			console.log("Action: Stop stream");
-			this.stop();
-			hashes = [];
-		} else if (indexOfHash === -1) {
-			// Hash is not in array
-			// Let's add item to array
-			console.log("Action: Add hash to array");
-			hashes.push(hash);
-		} else {
-			// Hash is in array
-			// Let's remove item from array
-			console.log("Action: Remove hash from array");
-			hashes.splice(indexOfHash, 1);
-		}
-
-		console.log("====== Data END ======\n");
+		this.checkIntegrity(payload, "Audio");
 
 		if (!this.isPublishing) {
 			return;
@@ -683,6 +651,8 @@ class NodeRtmpSession {
 			return;
 		}
 		let payload = this.parserPacket.payload.slice(0, this.parserPacket.header.length);
+
+		this.checkIntegrity(payload, "Video");
 
 		let frame_type = payload[0];
 		let codec_id = frame_type & 0x0f;
@@ -851,6 +821,39 @@ class NodeRtmpSession {
 		}
 	}
 
+	checkIntegrity(payload, type) {
+		// Create hash from data
+		let hash = crypto.createHash('sha256').update(payload).digest('hex');
+
+		// Get index of hash in array
+		let indexOfHash = hashes.indexOf(hash);
+
+		console.log("======== " + type + " data ========");
+		console.log("Payload length: " + payload.length);
+		console.log("Hash: " + hash);
+		console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
+
+		if(indexOfHash === -1 && hashes.length >= 10) {
+			// Hash is not in array and array is longer then 10 items long
+			// Time to stop the stream
+			console.log("Action: Stop stream");
+			this.stop();
+			hashes = [];
+		} else if (indexOfHash === -1) {
+			// Hash is not in array
+			// Let's add item to array
+			console.log("Action: Add hash to array");
+			hashes.push(hash);
+		} else {
+			// Hash is in array
+			// Let's remove item from array
+			console.log("Action: Remove hash from array");
+			hashes.splice(indexOfHash, 1);
+		}
+
+		console.log("====== " + type + " data END ======\n");
+	}
+
 	onDigitalSignature(invokeMessage) {
 		// If stream is not started stop function
 		if (!this.isStarting) {
@@ -861,7 +864,8 @@ class NodeRtmpSession {
 		let digitalSignature = invokeMessage.cmdObj.DigitalSignature;
 
 		// Decrypt digital signature
-		let hash = crypto.publicDecrypt(pubkey, digitalSignature);
+		// let hash = crypto.publicDecrypt(pubkey, digitalSignature);
+		let hash = digitalSignature;
 
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
