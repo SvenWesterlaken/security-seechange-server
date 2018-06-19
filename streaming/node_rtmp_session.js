@@ -7,6 +7,7 @@
 let crypto = require('crypto');
 let hashes = [];
 let digitalSignature = '';
+let pubkey;
 
 const QueryString = require('querystring');
 const AV = require('./node_core_av');
@@ -859,8 +860,8 @@ class NodeRtmpSession {
 		// Retrieve digital signature from amf object
 		let digitalSignature = invokeMessage.cmdObj.DigitalSignature;
 
-		//TODO Decrypt digital signature
-		let hash = digitalSignature;
+		// Decrypt digital signature
+		let hash = crypto.publicDecrypt(pubkey, digitalSignature);
 
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
