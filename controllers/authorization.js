@@ -12,9 +12,9 @@ module.exports = {
     var instance = axios.create({
       url: config.truYou_api, //working link to check agent = 'http://httpbin.org/user-agent'
       httpsAgent: new https.Agent({ //user agent is used to act on behalf of SeeChange, it gives extra information to the receiver so it can assess the capabilities of the sender
-        ca: fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.crt', "utf8"),
-        cert: fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.crt', "utf8"),
-        key: fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.key', "utf8"),
+        ca: fs.readFileSync(`${global.appRoot}` + '/certificates/SeeChangeCA.crt', "utf8"),
+        cert: fs.readFileSync(`${global.appRoot}` + '/certificates/SeeChangeCA.crt', "utf8"),
+        key: fs.readFileSync(`${global.appRoot}` + '/certificates/SeeChangeCA.key', "utf8"),
         rejectUnauthorized: false
       })
     });
