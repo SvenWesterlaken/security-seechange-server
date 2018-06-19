@@ -95,9 +95,6 @@ module.exports = {
     if (username !== "") {
       try {
         upload(req, res, function (err) {
-          // const username = req.header('Username') || '';
-          // const username = req.body.username || "";
-
           if (req.file !== undefined) {
             if (err) {
               console.log(err);
