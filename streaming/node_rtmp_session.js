@@ -4,8 +4,8 @@
 //  Copyright (c) 2018 Nodemedia. All rights reserved.
 //
 
-let createdHashes = [];
-let receivedHashes = [];
+let crypto = require('crypto');
+let hashes = [];
 let digitalSignature = '';
 
 const QueryString = require('querystring');
@@ -523,10 +523,8 @@ class NodeRtmpSession {
 			case RTMP_TYPE_EVENT:
 				return 0 === this.rtmpEventHandler() ? -1 : 0;
 			case RTMP_TYPE_AUDIO:
-				//TODO add size digitalsignature
 				return this.rtmpAudioHandler();
 			case RTMP_TYPE_VIDEO:
-				//TODO add size digitalsignature
 				return this.rtmpVideoHandler();
 			case RTMP_TYPE_FLEX_MESSAGE:
 			case RTMP_TYPE_INVOKE:
@@ -565,7 +563,45 @@ class NodeRtmpSession {
 		if (!this.isPublishing) {
 			return;
 		}
-		let payload = this.parserPacket.payload.slice(0, this.parserPacket.header.length + digitalSignature.length);
+		let payload = this.parserPacket.payload.slice(0, this.parserPacket.header.length);
+
+		let payloadCopy = this.parserPacket.payload;
+
+		console.log(payloadCopy.toString('hex'))
+
+		// Create hash from data
+		let hash = crypto.createHash('sha256').update(payloadCopy).digest('hex');
+
+		// Get index of hash in array
+		let indexOfHash = hashes.indexOf(hash);
+
+		console.log("======== Data ========");
+		console.log("Hash: " + hash);
+		console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
+
+		if(indexOfHash === -1 && hashes.length >= 10) {
+			// Hash is not in array and array is longer then 10 items long
+			// Time to stop the stream
+			console.log("Action: Stop stream");
+			this.stop();
+			hashes = [];
+		} else if (indexOfHash === -1) {
+			// Hash is not in array
+			// Let's add item to array
+			console.log("Action: Add hash to array");
+			hashes.push(hash);
+		} else {
+			// Hash is in array
+			// Let's remove item from array
+			console.log("Action: Remove hash from array");
+			hashes.splice(indexOfHash, 1);
+		}
+
+		console.log("====== Data END ======\n");
+
+		if (!this.isPublishing) {
+			return;
+		}
 
 		if (!this.isFirstAudioReceived) {
 			let sound_format = payload[0];
@@ -645,7 +681,7 @@ class NodeRtmpSession {
 		if (!this.isPublishing) {
 			return;
 		}
-		let payload = this.parserPacket.payload.slice(0, this.parserPacket.header.length + digitalSignature.length);
+		let payload = this.parserPacket.payload.slice(0, this.parserPacket.header.length);
 
 		let frame_type = payload[0];
 		let codec_id = frame_type & 0x0f;
@@ -815,35 +851,43 @@ class NodeRtmpSession {
 	}
 
 	onDigitalSignature(invokeMessage) {
+		// If stream is not started stop function
 		if (!this.isStarting) {
 			return;
 		}
-		let digitalSignature = invokeMessage.cmdObj.DigitalSignature + Math.random();
 
-		//TODO decrypt digital signature
+		// Retrieve digital signature from amf object
+		let digitalSignature = invokeMessage.cmdObj.DigitalSignature;
+
+		//TODO Decrypt digital signature
 		let hash = digitalSignature;
 
-		let indexOfHash = createdHashes.indexOf(hash);
-		let lengthOfArray = createdHashes.length;
+		// Get index of hash in array
+		let indexOfHash = hashes.indexOf(hash);
 
-		console.log("========================\n");
+		console.log("======== DS ========");
 		console.log("DigitalSignatue: " + digitalSignature);
-		console.log("Index: " + indexOfHash + " Length: " + lengthOfArray);
+		console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
 
-		if(indexOfHash !== -1 && lengthOfArray >= 10) {
-			console.log("Stop");
+		if(indexOfHash === -1 && hashes.length >= 10) {
+			// Hash is not in array and array is longer then 10 items long
+			// Time to stop the stream
+			console.log("Action: Stop stream");
 			this.stop();
-			receivedHashes = [];
-			createdHashes = [];
-		} else if (indexOfHash !== -1) {
-			console.log("Add");
-			receivedHashes.push(hash);
+			hashes = [];
+		} else if (indexOfHash === -1) {
+			// Hash is not in array
+			// Let's add item to array
+			console.log("Action: Add hash to array");
+			hashes.push(hash);
 		} else {
-			console.log("Remove");
-			createdHashes.splice(indexOfHash, 1);
+			// Hash is in array
+			// Let's remove item from array
+			console.log("Action: Remove hash from array");
+			hashes.splice(indexOfHash, 1);
 		}
 
-		console.log("========================");
+		console.log("====== DS END ======\n");
 
 	}
 
