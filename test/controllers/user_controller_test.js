@@ -72,14 +72,14 @@ describe('Modifying avatar image', () => {
   var authorizationToken = "token123";
 
   it('Updating existing avatar', (done) => {
-    testUser.imagePath = `${appRoot}` + '\\avatars\\Old_Image'; //set path to old image
+    testUser.imagePath = `${appRoot}` + '/avatars/Old_Image'; //set path to old image
     User.create(testUser)
       .then((userDb) => {
         chai.request(server)
           .put(`/api/user/avatar`)
           .set('X-Username', 'streamer1338')
           .set({Token: `${authorizationToken}`})
-          .attach('avatar', `${appRoot}` + '\\avatars\\New_Image', 'New_Image') //image used for uploading
+          .attach('avatar', `${appRoot}` + '/avatars/New_Image', 'New_Image') //image used for uploading
           .end((err, res) => {
             expect(err).to.be.null;
             expect(res).to.have.status(202);
@@ -93,17 +93,17 @@ describe('Modifying avatar image', () => {
   });
 
   after((done) => { //cleaning up
-    fs.readdir(`${appRoot}` + '\\avatars', (err, files) => {
+    fs.readdir(`${appRoot}` + '/avatars', (err, files) => {
       if (err) throw err;
       for (const file of files) { //remove all files created in tests, except for main image file
         if (file !== 'New_Image') {
-          fs.unlink(`${appRoot}` + '\\avatars\\' + file, (error) => {
+          fs.unlink(`${appRoot}` + '/avatars/' + file, (error) => {
             throw error
           });
         }
       }
 
-      fs.writeFileSync(`${appRoot}` + '\\avatars\\Old_Image', fs.readFileSync(`${appRoot}` + '\\avatars\\New_Image'), (error) => { //create "Old_Image" for future testing (old image is deleted when a new image is uploaded for a single user)
+      fs.writeFileSync(`${appRoot}` + '/avatars/Old_Image', fs.readFileSync(`${appRoot}` + '/avatars/New_Image'), (error) => { //create "Old_Image" for future testing (old image is deleted when a new image is uploaded for a single user)
         throw error
       });
       done();
@@ -111,7 +111,7 @@ describe('Modifying avatar image', () => {
   });
 
   it('Inserting invalid avatar', (done) => { //no image = invalid image format
-    testUser.imagePath = `${appRoot}` + '\\avatars\\Old_Image'; //set path to old image
+    testUser.imagePath = `${appRoot}` + '/avatars/Old_Image'; //set path to old image
     User.create(testUser)
       .then((userDb) => {
         chai.request(server)
