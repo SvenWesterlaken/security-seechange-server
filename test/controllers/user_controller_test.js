@@ -23,7 +23,7 @@ describe('Modifying user', () => {
 
   var authorizationToken = "token123";
 
-  it('Updating user public name successful', (done) => {
+  xit('Updating user public name successful', (done) => {
     User.create(testUser)
       .then((userDb) => {
         userDb.publicName = "goodstreamer132";
@@ -40,7 +40,7 @@ describe('Modifying user', () => {
       });
   });
 
-  it('Updating user slogan unsuccessful', (done) => {
+  xit('Updating user slogan unsuccessful', (done) => {
     const testUser = new User({
       username: 'streamer1338',
       publicName: 'streamer1337'
@@ -71,7 +71,7 @@ describe('Modifying avatar image', () => {
 
   var authorizationToken = "token123";
 
-  it('Updating existing avatar', (done) => {
+  xit('Updating existing avatar', (done) => {
     testUser.imagePath = `${appRoot}` + '/avatars/Old_Image'; //set path to old image
     User.create(testUser)
       .then((userDb) => {
@@ -110,7 +110,7 @@ describe('Modifying avatar image', () => {
     });
   });
 
-  it('Inserting invalid avatar', (done) => { //no image = invalid image format
+  xit('Inserting invalid avatar', (done) => { //no image = invalid image format
     testUser.imagePath = `${appRoot}` + '/avatars/Old_Image'; //set path to old image
     User.create(testUser)
       .then((userDb) => {
