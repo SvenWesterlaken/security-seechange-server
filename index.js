@@ -11,11 +11,12 @@ global.appRoot = path.resolve(__dirname);
 if (process.env.NODE_ENV === 'test') {
   appRoot += "\\test";
 }
-const server = require('http').createServer(app); //insecure
-// const certificate  = fs.readFileSync(`${appRoot}` + '\\certificates\\certificate.pem', 'utf8'); //self-signed certificate has to be accepted for https
-// const privateKey = fs.readFileSync(`${appRoot}` + '\\certificates\\key.pem', 'utf8');
-// const credentials = {key: privateKey, cert: certificate};
-// const server = require('https').createServer(credentials, app);
+// const server = require('http').createServer(app); //insecure
+const authority = fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.crt', "utf8");
+const certificate = fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.crt', "utf8");
+const privateKey = fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.key', "utf8");
+const credentials = {key: privateKey, cert: certificate, ca: authority};
+const server = require('https').createServer(credentials, app);
 // Create http server, and pass it to socket.io
 module.exports.io = require('socket.io')(server);
 const chatController = require('./controllers/ChatController');
