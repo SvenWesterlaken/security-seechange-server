@@ -3,6 +3,10 @@
 //  illuspas[a]gmail.com
 //  Copyright (c) 2017 Nodemedia. All rights reserved.
 //
+
+const user = require('../controllers/user');
+
+const routes = require('../routes/routes');
 const Logger = require('../logger');
 
 const Fs = require('fs');
@@ -51,8 +55,11 @@ class NodeHttpServer {
 				this.onConnect(req, res);
 			}
 		});
-		
-		
+
+        app.use("/api/", routes);
+        app.use("/api/avatars", Express.static(__dirname + '/avatars')); //images in avatar directory are accessible directly
+
+
 		app.use(Express.static(this.webroot));
 		app.use(Express.static(this.mediaroot));
 		

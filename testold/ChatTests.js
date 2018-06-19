@@ -9,7 +9,7 @@ const privkeyBob = fs.readFileSync('./test_keys/bob/privkey.pem');
 
 const Chat = require('../models/chatMessage');
 
-describe("Chat test", function() {
+xdescribe("Chat test", function() {
 
 
     let server,
