@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 const https = require('https');
 const User = require('../models/user');
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //accept self-signed requests, not needed if certificate is authorized
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //accept self-signed requests, not needed if certificate is authorized
 
 module.exports = {
 //Checking client authorization token on TruYou server
@@ -12,9 +12,9 @@ module.exports = {
     var instance = axios.create({
       url: config.truYou_api, //working link to check agent = 'http://httpbin.org/user-agent'
       httpsAgent: new https.Agent({ //user agent is used to act on behalf of SeeChange, it gives extra information to the receiver so it can assess the capabilities of the sender
-        // ca: fs.readFileSync(`${config.signature}.CA`, "utf8"), //not used, certificate is self-signed
-        cert: fs.readFileSync(`${global.appRoot}` + '\\certificates\\certificate.pem', "utf8"),
-        key: fs.readFileSync(`${global.appRoot}` + '\\certificates\\key.pem', "utf8"),
+        ca: fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.crt', "utf8"),
+        cert: fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.crt', "utf8"),
+        key: fs.readFileSync(`${global.appRoot}` + '\\certificates\\SeeChangeCA.key', "utf8"),
         rejectUnauthorized: false
       })
     });
