@@ -32,7 +32,7 @@ describe("Chat test", function() {
         done();
     });
 
-    it('can authenticate', (done) => {
+    xit('can authenticate', (done) => {
 
         var scope = nock('http://www.example.com')
             .get('/pubkey')
@@ -64,7 +64,7 @@ describe("Chat test", function() {
        client.emit("authenticate", "Bob", cipher)
     });
 
-    it('can pass on messages', function(done) {
+    xit('can pass on messages', function(done) {
 
         var scope = nock('http://www.example.com')
             .get('/pubkey')

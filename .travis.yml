@@ -3,6 +3,8 @@ node_js:
   - "node"
 before_script:
   - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
+  - npm install chai chai-http mocha
+  - npm install axios-mock-adapter --save-dev
   - npm install
 after_failure:
   - cat MSBuild_*.failure.txt
