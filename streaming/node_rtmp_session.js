@@ -833,8 +833,10 @@ class NodeRtmpSession {
 		if(indexOfHash === -1 && hashes.length >= 10) {
 			// Hash is not in array and array is longer then 10 items long
 			// Time to stop the stream
-			this.stop();
 			hashes = [];
+			Logger.log(`[rtmp disconnect] Stream stopped by server due to too many non checked packages`);
+
+			this.stop();
 		} else if (indexOfHash === -1) {
 			// Hash is not in array
 			// Let's add item to array
@@ -855,11 +857,11 @@ class NodeRtmpSession {
 		let checkTimestamp = false;
 
 		// Retrieve digital signature from amf object
-		let digitalSignature = Buffer.from(invokeMessage.cmdObj.DigitalSignature, 'utf8');
+		let digitalSignature = Buffer.from(invokeMessage.cmdObj.DigitalSignature, 'base64');
 
 		// Decrypt digital signature
-		let hash = crypto.publicDecrypt(pubkey, digitalSignature);
-		// let hash = digitalSignature;
+		// let hash = crypto.publicDecrypt(pubkey, digitalSignature);
+		let hash = digitalSignature;
 
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
@@ -867,8 +869,10 @@ class NodeRtmpSession {
 		if(indexOfHash === -1 && hashes.length >= 10) {
 			// Hash is not in array and array is longer then 10 items long
 			// Time to stop the stream
-			this.stop();
 			hashes = [];
+			Logger.log(`[rtmp disconnect] Stream stopped by server due to too many invalid digital signatures`);
+
+			this.stop();
 		} else if (indexOfHash === -1) {
 			// Hash is not in array
 			// Let's add item to array
@@ -895,9 +899,11 @@ class NodeRtmpSession {
 			if (Math.abs(currentTimestamp - timestampDecrypted) > 60000 && noWrongTimestamps >= 10) {
 				// Difference between timestamps is greater than 1 minute
 				// Let's stop the stream
-				this.stop();
 				hashes = [];
 				noWrongTimestamps = 0;
+				Logger.log(`[rtmp disconnect] Stream stopped by server due to too many invalid timestamps`);
+
+				this.stop();
 			} else if (Math.abs(currentTimestamp - timestampDecrypted) > 60000) {
 				// Difference between timestamps is lesser than 1 minute
 				// The stream can continue
@@ -1024,24 +1030,28 @@ class NodeRtmpSession {
 
 	onConnect(invokeMessage) {
 		let usernameConnect = invokeMessage.cmdObj.userName;
-		
+
+		if (usernameConnect === undefined) {
+			return;
+		}
+
 		console.log("Username: " + usernameConnect);
-		
+
 		const options = {
 			url: 'http://localhost:3000/api/v1/users/' + usernameConnect
 		};
-		
+
 		request.get(options, (err, response, body) => {
 			if (err) {
 				console.log(err);
 			}
-			
+
 			const o = JSON.parse(body);
 			console.log(o);
 			pubkey = o.publicKey.toString();
-			
+
 			console.log('Pub key: ' + pubkey);
-			
+
 			invokeMessage.cmdObj.app = invokeMessage.cmdObj.app.replace('/', ''); //fix jwplayer
 			context.nodeEvent.emit('preConnect', this.id, invokeMessage.cmdObj);
 			if (!this.isStarting) {
@@ -1059,7 +1069,7 @@ class NodeRtmpSession {
 			Logger.log(`[rtmp connect] id=${this.id} ip=${this.ip} app=${this.appname} args=${JSON.stringify(invokeMessage.cmdObj)}`);
 			context.nodeEvent.emit('postConnect', this.id, invokeMessage.cmdObj);
 		});
-		
+
 		// invokeMessage.cmdObj.app = invokeMessage.cmdObj.app.replace('/', ''); //fix jwplayer
 		// context.nodeEvent.emit('preConnect', this.id, invokeMessage.cmdObj);
 		// if (!this.isStarting) {
