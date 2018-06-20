@@ -22,7 +22,7 @@ after_success:
   - npm install gulp gulp-mocha gulp-istanbul run-sequence sonarqube-scanner
   - npm run sonar
 script:
-  - npm test
+  - npm test-travis
   - sonar-scanner
 services:
   - mongodb
