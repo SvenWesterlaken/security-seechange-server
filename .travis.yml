@@ -12,9 +12,7 @@ deploy:
   api_key:
     secure: X2qftL72mq5FJ7P5t/vjChxzMzXG9aY/1sF82aYMl6quw2pY1g9p7/Utau7H/hM9dOdvY4wtJdlqbaOPjPY0CyaSSk4wMxHK14Hb7BzD8RyM+bvWjnG2LighUZeX8JLOq9165hpUd9H5lrByDSVQlYoyX/uNU4JT/bT3L1LHa8RiUuNcmc0MNaQQbisMjATntZIUpvCQ3eLdnhtBf4+JUNJLsNWSCRRWIqGYmFtHgwHYq5NWTvTOuZ4oWqnFMXisuRwDnoUwkIj3UoNYcXtHvJr5qdwvXsa0NUreKDeeN8yOoQOB575JAocB0Vc+/kdjzu7/bieValuBvAGhvz8AKW2s38BVnbG9PiTVt1GLNER6W7G8Sx/rF6Z4kAgrJK2lMOIeVfUkwG8GR9oSlqCXP+yztuaRDRCdhYBA4MC+eVhg5yORyG7rD94VdjUXRhdmd/GDtho0CSCVjyCT/G7IPr91uS/8LhwPVvYTKqqjIR6T0qtpVQv81c/CJ+/effKoMSt/mNE1oDvLhS0Zjhvl35o8FgGxGCj/8Ah8vaBRs955zzRunH3Y96Arshf6QeVEYzDCMz9pdnM4xJN7GXRXLqmKqGqhl3EtRjOkQpLtEaRNrFxGYiJnlqW5NUCWjPQPR4K0BlFW9XKUdFSy6NlMKRX/SxoV5dD9gQd6e/gAxw4=
   on:
-    branches:
-      only:
-        - feature/deploy
+    all_branches: true
 before_script:
 - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
 - npm install chai chai-http mocha
