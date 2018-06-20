@@ -6,7 +6,7 @@ const app = express();
 const db = require('./db/database');
 const config = require('./config/env');
 const fs = require('fs');
-//setting a global path to index.js (main file) so it can be used to locate certificates
+//setting a global path to index-old.js (main file) so it can be used to locate certificates
 global.appRoot = path.resolve(__dirname);
 if (process.env.NODE_ENV === 'test') {
   appRoot += "/test";
@@ -17,12 +17,6 @@ const certificate = fs.readFileSync(path.normalize(`${global.appRoot}` + '/certi
 const privateKey = fs.readFileSync(path.normalize(`${global.appRoot}` + '/certificates/SeeChangeCA.key'), "utf8");
 const credentials = {key: privateKey, cert: certificate, ca: authority};
 const server = require('https').createServer(credentials, app);
-// Create http server, and pass it to socket.io
-module.exports.io = require('socket.io')(server);
-const chatController = require('./controllers/ChatController');
-
-// Send all socket connections to chat controller
-module.exports.io.on('connect', chatController);
 
 app.use(bodyParser.json({limit: '50mb'})); //max file size
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
