@@ -20,7 +20,7 @@ after_failure:
   - cat MSBuild_*.failure.txt
 after_success:
   - npm install gulp gulp-mocha gulp-istanbul run-sequence sonarqube-scanner
-  - npm run sonar
+  - npm run sonar-scanner
 script:
   - npm test
 services:
