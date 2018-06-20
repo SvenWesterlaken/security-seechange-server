@@ -6,6 +6,7 @@
 
 let crypto = require('crypto');
 let hashes = [];
+let noWrongTimestamps = 0;
 let digitalSignature = '';
 let pubkey = '';
 
@@ -829,30 +830,20 @@ class NodeRtmpSession {
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
 
-		// console.log("======== " + type + " data ========");
-		// console.log("Payload length: " + payload.length);
-		// console.log("Hash: " + hash);
-		// console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
-
 		if(indexOfHash === -1 && hashes.length >= 10) {
 			// Hash is not in array and array is longer then 10 items long
 			// Time to stop the stream
-			// console.log("Action: Stop stream");
 			this.stop();
 			hashes = [];
 		} else if (indexOfHash === -1) {
 			// Hash is not in array
 			// Let's add item to array
-			// console.log("Action: Add hash to array");
 			hashes.push(hash);
 		} else {
 			// Hash is in array
 			// Let's remove item from array
-			// console.log("Action: Remove hash from array");
 			hashes.splice(indexOfHash, 1);
 		}
-
-		// console.log("====== " + type + " data END ======\n");
 	}
 
 	onDigitalSignature(invokeMessage) {
@@ -860,6 +851,8 @@ class NodeRtmpSession {
 		if (!this.isStarting) {
 			return;
 		}
+
+		let checkTimestamp = false;
 
 		// Retrieve digital signature from amf object
 		let digitalSignature = invokeMessage.cmdObj.DigitalSignature;
@@ -871,29 +864,46 @@ class NodeRtmpSession {
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
 
-		// console.log("======== DS ========");
-		// console.log("DigitalSignatue: " + digitalSignature);
-		// console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
-
 		if(indexOfHash === -1 && hashes.length >= 10) {
 			// Hash is not in array and array is longer then 10 items long
 			// Time to stop the stream
-			// console.log("Action: Stop stream");
 			this.stop();
 			hashes = [];
 		} else if (indexOfHash === -1) {
 			// Hash is not in array
 			// Let's add item to array
-			// console.log("Action: Add hash to array");
 			hashes.push(hash);
 		} else {
 			// Hash is in array
 			// Let's remove item from array
-			// console.log("Action: Remove hash from array");
 			hashes.splice(indexOfHash, 1);
+			checkTimestamp = true;
 		}
 
-		// console.log("====== DS END ======\n");
+
+		// Check timestamp is necessary
+		if (checkTimestamp) {
+			// Get timestamp from amf object
+			let timestampEncrypted = invokeMessage.cmdObj.Timestamp;
+
+			// Decrypt timestamp
+			let timestampDecrypted = crypto.publicDecrypt(pubkey, timestampEncrypted);
+
+			// Get current timestamp in miliseconds
+			let currentTimestamp = new Date().getTime();
+
+			if (Math.abs(currentTimestamp - timestampDecrypted) > 60000 && noWrongTimestamps >= 10) {
+				// Difference between timestamps is greater than 1 minute
+				// Let's stop the stream
+				this.stop();
+				hashes = [];
+				noWrongTimestamps = 0;
+			} else if (Math.abs(currentTimestamp - timestampDecrypted) > 60000) {
+				// Difference between timestamps is lesser than 1 minute
+				// The stream can continue
+				noWrongTimestamps++;
+			}
+		}
 
 	}
 
