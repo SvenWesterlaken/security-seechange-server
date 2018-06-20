@@ -855,11 +855,11 @@ class NodeRtmpSession {
 		let checkTimestamp = false;
 
 		// Retrieve digital signature from amf object
-		let digitalSignature = invokeMessage.cmdObj.DigitalSignature;
+		let digitalSignature = Buffer.from(invokeMessage.cmdObj.DigitalSignature, 'utf8');
 
 		// Decrypt digital signature
-		// let hash = crypto.publicDecrypt(pubkey, digitalSignature);
-		let hash = digitalSignature;
+		let hash = crypto.publicDecrypt(pubkey, digitalSignature);
+		// let hash = digitalSignature;
 
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
@@ -884,7 +884,7 @@ class NodeRtmpSession {
 		// Check timestamp is necessary
 		if (checkTimestamp) {
 			// Get timestamp from amf object
-			let timestampEncrypted = invokeMessage.cmdObj.Timestamp;
+			let timestampEncrypted = Buffer.from(invokeMessage.cmdObj.Timestamp, 'utf8');
 
 			// Decrypt timestamp
 			let timestampDecrypted = crypto.publicDecrypt(pubkey, timestampEncrypted);
