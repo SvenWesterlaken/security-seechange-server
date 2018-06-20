@@ -22,6 +22,6 @@ after_success:
   - npm install gulp gulp-mocha gulp-istanbul run-sequence sonarqube-scanner
   - npm run sonar
 script:
-  - npm test-travis
+  - npm test
 services:
   - mongodb
