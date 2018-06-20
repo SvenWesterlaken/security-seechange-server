@@ -23,6 +23,5 @@ after_success:
   - npm run sonar
 script:
   - npm test-travis
-  - sonar-scanner
 services:
   - mongodb
