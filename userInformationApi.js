@@ -6,7 +6,7 @@ const app = express();
 const db = require('./db/database');
 const config = require('./config/env');
 const fs = require('fs');
-//setting a global path to index-old.js (main file) so it can be used to locate certificates
+//setting a global path to userInformationApi.js (main file) so it can be used to locate certificates
 global.appRoot = path.resolve(__dirname);
 if (process.env.NODE_ENV === 'test') {
   appRoot += "/test";

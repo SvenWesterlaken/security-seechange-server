@@ -72,4 +72,4 @@ nms.on('postPlay', (id, StreamPath, args) => {
 nms.on('donePlay', (id, StreamPath, args) => {
 	console.log('[NodeEvent on donePlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
 });
-
+userInformationApi = require('./userInformationApi');

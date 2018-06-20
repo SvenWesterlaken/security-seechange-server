@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chai_http = require('chai-http');
-const server = require('../../app');
+const server = require('../../userInformationApi');
 const expect = chai.expect;
 const User = require('../../models/user');
 const fs = require('fs');
@@ -23,7 +23,7 @@ describe('Modifying user', () => {
 
   var authorizationToken = "token123";
 
-  xit('Updating user public name successful', (done) => {
+  it('Updating user public name successful', (done) => {
     User.create(testUser)
       .then((userDb) => {
         userDb.publicName = "goodstreamer132";
@@ -40,7 +40,7 @@ describe('Modifying user', () => {
       });
   });
 
-  xit('Updating user slogan unsuccessful', (done) => {
+  it('Updating user slogan unsuccessful', (done) => {
     const testUser = new User({
       username: 'streamer1338',
       publicName: 'streamer1337'
@@ -71,7 +71,7 @@ describe('Modifying avatar image', () => {
 
   var authorizationToken = "token123";
 
-  xit('Updating existing avatar', (done) => {
+  it('Updating existing avatar', (done) => {
     testUser.imagePath = `${appRoot}` + '/avatars/Old_Image'; //set path to old image
     User.create(testUser)
       .then((userDb) => {
@@ -110,7 +110,7 @@ describe('Modifying avatar image', () => {
     });
   });
 
-  xit('Inserting invalid avatar', (done) => { //no image = invalid image format
+  it('Inserting invalid avatar', (done) => { //no image = invalid image format
     testUser.imagePath = `${appRoot}` + '/avatars/Old_Image'; //set path to old image
     User.create(testUser)
       .then((userDb) => {

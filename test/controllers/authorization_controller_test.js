@@ -17,8 +17,8 @@ describe('Client authorization', () => {
 
     var authorizationToken = "token123";
 
-    xit('Token given by client', (done) => {
-        const server = require('../../index-old');
+    it('Token given by client', (done) => {
+        const server = require('../../userInformationApi');
         chai.request(server)
             .get('/api')
             .set({Token: `${authorizationToken}`})
@@ -31,8 +31,8 @@ describe('Client authorization', () => {
             });
     });
 
-    xit('No token provided', (done) => {
-        const server = require('../../index-old');
+    it('No token provided', (done) => {
+        const server = require('../../userInformationApi');
         chai.request(server)
             .get('/api')
             .set('X-Username', 'streamer1337')

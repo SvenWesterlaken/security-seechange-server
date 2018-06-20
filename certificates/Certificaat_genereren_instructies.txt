@@ -1,0 +1,16 @@
+SeeChangeCa.cnf bevat de informatie die gebruikt worden bij het genereren van certifcaat. In dit bestand moeten de volgende gegevens aangepast worden naar het ip/domein waarop de certificaat gebruikt gaat worden:
+regel 13; CN = ip adres
+regel 22; DNS.1 = ip adres
+
+Vervolgens de volgende openssl commands uitvoeren (SeeChangeCA.cnf moet in openssl/bin folder aanwezig zijn):
+
+1. aanmaken key, 2. aanmaken certificate request, 3. signing
+
+1. openssl genrsa -out SeeChangeCA.key 2048
+
+2. openssl req -config SeeChangeCA.cnf -sha256 -nodes -new -key SeeChangeCA.key -out SeeChangeCA.csr -extensions v3_req
+
+3. openssl x509 -req -days 365 -in SeeChangeCA.csr -signkey SeeChangeCA.key -out SeeChangeCA.crt -extfile SeeChangeCA.cnf -extensions v3_req
+
+
+Na het genereren van een nieuwe certificaat alle aangemaakte bestanden verplaatsen naar het SeeChange project om het oude certificaat te vervangen.

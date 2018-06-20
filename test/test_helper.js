@@ -12,6 +12,8 @@ before((done) => {
     .on("error", (error) => {
       console.warn('Warning', error);
     });
+
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
 });
 
 beforeEach((done) => {
