@@ -7,7 +7,7 @@
 let crypto = require('crypto');
 let hashes = [];
 let digitalSignature = '';
-let pubkey;
+let pubkey = '';
 
 const QueryString = require('querystring');
 const AV = require('./node_core_av');
@@ -19,6 +19,7 @@ const NodeCoreUtils = require('./node_core_utils');
 const NodeFlvSession = require('./node_flv_session');
 const context = require('./node_core_ctx');
 const Logger = require('../logger');
+const request = require('request');
 
 const N_CHUNK_STREAM = 8;
 const RTMP_VERSION = 3;
@@ -1012,22 +1013,59 @@ class NodeRtmpSession {
 	}
 
 	onConnect(invokeMessage) {
-		invokeMessage.cmdObj.app = invokeMessage.cmdObj.app.replace('/', ''); //fix jwplayer
-		context.nodeEvent.emit('preConnect', this.id, invokeMessage.cmdObj);
-		if (!this.isStarting) {
-			return;
-		}
-		this.connectCmdObj = invokeMessage.cmdObj;
-		this.appname = invokeMessage.cmdObj.app;
-		this.objectEncoding = invokeMessage.cmdObj.objectEncoding != null ? invokeMessage.cmdObj.objectEncoding : 0;
-		this.connectTime = new Date();
-		this.startTimestamp = Date.now();
-		this.sendWindowACK(5000000);
-		this.setPeerBandwidth(5000000, 2);
-		this.setChunkSize(this.outChunkSize);
-		this.respondConnect(invokeMessage.transId);
-		Logger.log(`[rtmp connect] id=${this.id} ip=${this.ip} app=${this.appname} args=${JSON.stringify(invokeMessage.cmdObj)}`);
-		context.nodeEvent.emit('postConnect', this.id, invokeMessage.cmdObj);
+		let usernameConnect = invokeMessage.cmdObj.userName;
+		
+		console.log("Username: " + usernameConnect);
+		
+		const options = {
+			url: 'http://localhost:3000/api/v1/users/' + usernameConnect
+		};
+		
+		request.get(options, (err, response, body) => {
+			if (err) {
+				console.log(err);
+			}
+			
+			const o = JSON.parse(body);
+			console.log(o);
+			pubkey = o.publicKey.toString();
+			
+			console.log('Pub key: ' + pubkey);
+			
+			invokeMessage.cmdObj.app = invokeMessage.cmdObj.app.replace('/', ''); //fix jwplayer
+			context.nodeEvent.emit('preConnect', this.id, invokeMessage.cmdObj);
+			if (!this.isStarting) {
+				return;
+			}
+			this.connectCmdObj = invokeMessage.cmdObj;
+			this.appname = invokeMessage.cmdObj.app;
+			this.objectEncoding = invokeMessage.cmdObj.objectEncoding != null ? invokeMessage.cmdObj.objectEncoding : 0;
+			this.connectTime = new Date();
+			this.startTimestamp = Date.now();
+			this.sendWindowACK(5000000);
+			this.setPeerBandwidth(5000000, 2);
+			this.setChunkSize(this.outChunkSize);
+			this.respondConnect(invokeMessage.transId);
+			Logger.log(`[rtmp connect] id=${this.id} ip=${this.ip} app=${this.appname} args=${JSON.stringify(invokeMessage.cmdObj)}`);
+			context.nodeEvent.emit('postConnect', this.id, invokeMessage.cmdObj);
+		});
+		
+		// invokeMessage.cmdObj.app = invokeMessage.cmdObj.app.replace('/', ''); //fix jwplayer
+		// context.nodeEvent.emit('preConnect', this.id, invokeMessage.cmdObj);
+		// if (!this.isStarting) {
+		// 	return;
+		// }
+		// this.connectCmdObj = invokeMessage.cmdObj;
+		// this.appname = invokeMessage.cmdObj.app;
+		// this.objectEncoding = invokeMessage.cmdObj.objectEncoding != null ? invokeMessage.cmdObj.objectEncoding : 0;
+		// this.connectTime = new Date();
+		// this.startTimestamp = Date.now();
+		// this.sendWindowACK(5000000);
+		// this.setPeerBandwidth(5000000, 2);
+		// this.setChunkSize(this.outChunkSize);
+		// this.respondConnect(invokeMessage.transId);
+		// Logger.log(`[rtmp connect] id=${this.id} ip=${this.ip} app=${this.appname} args=${JSON.stringify(invokeMessage.cmdObj)}`);
+		// context.nodeEvent.emit('postConnect', this.id, invokeMessage.cmdObj);
 	}
 
 	onCreateStream(invokeMessage) {
