@@ -10,9 +10,11 @@ addons:
 deploy:
   provider: heroku
   api_key:
-    secure: qufCrBLt2zDC14/zDUEd0oYIJASBX7YDKmeQMs1rGtdKcjnP9vNt6BxLwAR7YVSsoHZHaNEcCfJov/l8MdmCeYq9UYJ2HDfwnTsRVT/dyr6A4h8t8GQAoBKrboG3bffmwS0H5opEnYt4RHGZ8sla/GgNvvTa6+pazDAWYcEQideioh4yRWcJtLWlLEPIsfK7KrR/PuVeRVr0BjLFo7udMKFO10t6V7/HzFMmYHjlU3NSkZf4eoAkXLB9CGP764zRe412UWZRtC2N+x3zB49uc3CdJ20w8rpljwrbWHCRCdgLm1l/ZZGilRnwSh/cWq7wViInSpGDj1840EpvZFQCQ52b0/YM3l5Jupkw9i3+fF6rZvtmmd3eBHGhLnBbBjmY9sEIkj3mgGBDOFtDe+Xt3yp8sz34UrVxNL9KNoDjfH147KHsWC8l5Y0iW3jxMTtPEPtYArGeRawyMXp2ghp1/KtZ0u7VW1bcS6kWPwES/fOmytPcT69DjmAwV05B1XYzyF0jNqbI+dLfGb55mI543nDwTYEabVoHFWeVGB3XeUtspC2hq4QBXUjMGdesc0+DXvklnOT1eS2rKSltJhGfANTTeDjcN6UgCOoi1RqiMKM+mYrtm4eo4BX9Dvc56QE/QOlodXOxkEb9OSZK6OsUDsvQ4TBOu9rQ2MPlOYU1XJM=
+    secure: X2qftL72mq5FJ7P5t/vjChxzMzXG9aY/1sF82aYMl6quw2pY1g9p7/Utau7H/hM9dOdvY4wtJdlqbaOPjPY0CyaSSk4wMxHK14Hb7BzD8RyM+bvWjnG2LighUZeX8JLOq9165hpUd9H5lrByDSVQlYoyX/uNU4JT/bT3L1LHa8RiUuNcmc0MNaQQbisMjATntZIUpvCQ3eLdnhtBf4+JUNJLsNWSCRRWIqGYmFtHgwHYq5NWTvTOuZ4oWqnFMXisuRwDnoUwkIj3UoNYcXtHvJr5qdwvXsa0NUreKDeeN8yOoQOB575JAocB0Vc+/kdjzu7/bieValuBvAGhvz8AKW2s38BVnbG9PiTVt1GLNER6W7G8Sx/rF6Z4kAgrJK2lMOIeVfUkwG8GR9oSlqCXP+yztuaRDRCdhYBA4MC+eVhg5yORyG7rD94VdjUXRhdmd/GDtho0CSCVjyCT/G7IPr91uS/8LhwPVvYTKqqjIR6T0qtpVQv81c/CJ+/effKoMSt/mNE1oDvLhS0Zjhvl35o8FgGxGCj/8Ah8vaBRs955zzRunH3Y96Arshf6QeVEYzDCMz9pdnM4xJN7GXRXLqmKqGqhl3EtRjOkQpLtEaRNrFxGYiJnlqW5NUCWjPQPR4K0BlFW9XKUdFSy6NlMKRX/SxoV5dD9gQd6e/gAxw4=
   on:
-    branch: feature/ontwikkelstraat
+    branches:
+      only:
+        - feature/ontwikkelstraat
 before_script:
 - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
 - npm install chai chai-http mocha
