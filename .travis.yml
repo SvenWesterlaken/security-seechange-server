@@ -1,27 +1,26 @@
 language: node_js
 dist: trusty
 node_js:
-  - "node"
+- node
 addons:
   sonarcloud:
-    organization: "matsgemmeke-github" # the key of the org you chose at step #3
+    organization: matsgemmeke-github
     token:
-      secure: 45d53550e000c157800fac804a339d596cc96dee # encrypted value of your token
+      secure: 45d53550e000c157800fac804a339d596cc96dee
 deploy:
   provider: heroku
   api_key:
-    secure: "YOUR ENCRYPTED API KEY"
+    secure: qufCrBLt2zDC14/zDUEd0oYIJASBX7YDKmeQMs1rGtdKcjnP9vNt6BxLwAR7YVSsoHZHaNEcCfJov/l8MdmCeYq9UYJ2HDfwnTsRVT/dyr6A4h8t8GQAoBKrboG3bffmwS0H5opEnYt4RHGZ8sla/GgNvvTa6+pazDAWYcEQideioh4yRWcJtLWlLEPIsfK7KrR/PuVeRVr0BjLFo7udMKFO10t6V7/HzFMmYHjlU3NSkZf4eoAkXLB9CGP764zRe412UWZRtC2N+x3zB49uc3CdJ20w8rpljwrbWHCRCdgLm1l/ZZGilRnwSh/cWq7wViInSpGDj1840EpvZFQCQ52b0/YM3l5Jupkw9i3+fF6rZvtmmd3eBHGhLnBbBjmY9sEIkj3mgGBDOFtDe+Xt3yp8sz34UrVxNL9KNoDjfH147KHsWC8l5Y0iW3jxMTtPEPtYArGeRawyMXp2ghp1/KtZ0u7VW1bcS6kWPwES/fOmytPcT69DjmAwV05B1XYzyF0jNqbI+dLfGb55mI543nDwTYEabVoHFWeVGB3XeUtspC2hq4QBXUjMGdesc0+DXvklnOT1eS2rKSltJhGfANTTeDjcN6UgCOoi1RqiMKM+mYrtm4eo4BX9Dvc56QE/QOlodXOxkEb9OSZK6OsUDsvQ4TBOu9rQ2MPlOYU1XJM=
 before_script:
-  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
-  - npm install chai chai-http mocha
-  - npm install axios-mock-adapter --save-dev
-  - npm install
+- mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
+- npm install chai chai-http mocha
+- npm install axios-mock-adapter --save-dev
+- npm install
 after_failure:
-  - cat MSBuild_*.failure.txt
+- cat MSBuild_*.failure.txt
 after_success:
-  - npm install gulp gulp-mocha gulp-istanbul run-sequence sonarqube-scanner
-  - npm run sonar-scanner
+- npm run sonar-scanner
 script:
-  - npm test
+- npm test
 services:
-  - mongodb
+- mongodb
