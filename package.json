@@ -6,7 +6,7 @@
   "scripts": {
     "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner.bat",
     "start": "nodemon app.js",
-    "test": "set NODE_ENV=test&& nodemon --exec mocha --recursive"
+    "test": "set NODE_ENV=test&& mocha --exit --recursive"
   },
   "repository": {
     "type": "git",
