@@ -1,6 +1,6 @@
 describe('Dummy test', () => {
 
-    it ('Auto assert true', (done) => {
+    it('Auto pass', (done) => {
         done();
     });
 });

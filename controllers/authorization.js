@@ -40,7 +40,7 @@ module.exports = {
         }
       }).catch(error => {
         // console.log("truyou error code: " + `${error.response.status}`);
-        res.status(401).json({error: "Invalid token"}); //token not validated by TruYou
+        res.status(401).json({error: "Unable to verify token on TruYou"}); //token not validated by TruYou
       });
     } else {
       res.status(400).json({error: "Token or username not provided"}); //request is denied when token or username are not provided
