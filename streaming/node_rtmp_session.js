@@ -828,30 +828,30 @@ class NodeRtmpSession {
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
 
-		console.log("======== " + type + " data ========");
-		console.log("Payload length: " + payload.length);
-		console.log("Hash: " + hash);
-		console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
+		// console.log("======== " + type + " data ========");
+		// console.log("Payload length: " + payload.length);
+		// console.log("Hash: " + hash);
+		// console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
 
 		if(indexOfHash === -1 && hashes.length >= 10) {
 			// Hash is not in array and array is longer then 10 items long
 			// Time to stop the stream
-			console.log("Action: Stop stream");
+			// console.log("Action: Stop stream");
 			this.stop();
 			hashes = [];
 		} else if (indexOfHash === -1) {
 			// Hash is not in array
 			// Let's add item to array
-			console.log("Action: Add hash to array");
+			// console.log("Action: Add hash to array");
 			hashes.push(hash);
 		} else {
 			// Hash is in array
 			// Let's remove item from array
-			console.log("Action: Remove hash from array");
+			// console.log("Action: Remove hash from array");
 			hashes.splice(indexOfHash, 1);
 		}
 
-		console.log("====== " + type + " data END ======\n");
+		// console.log("====== " + type + " data END ======\n");
 	}
 
 	onDigitalSignature(invokeMessage) {
@@ -870,29 +870,29 @@ class NodeRtmpSession {
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
 
-		console.log("======== DS ========");
-		console.log("DigitalSignatue: " + digitalSignature);
-		console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
+		// console.log("======== DS ========");
+		// console.log("DigitalSignatue: " + digitalSignature);
+		// console.log("Index: " + indexOfHash + " | Array length: " + hashes.length);
 
 		if(indexOfHash === -1 && hashes.length >= 10) {
 			// Hash is not in array and array is longer then 10 items long
 			// Time to stop the stream
-			console.log("Action: Stop stream");
+			// console.log("Action: Stop stream");
 			this.stop();
 			hashes = [];
 		} else if (indexOfHash === -1) {
 			// Hash is not in array
 			// Let's add item to array
-			console.log("Action: Add hash to array");
+			// console.log("Action: Add hash to array");
 			hashes.push(hash);
 		} else {
 			// Hash is in array
 			// Let's remove item from array
-			console.log("Action: Remove hash from array");
+			// console.log("Action: Remove hash from array");
 			hashes.splice(indexOfHash, 1);
 		}
 
-		console.log("====== DS END ======\n");
+		// console.log("====== DS END ======\n");
 
 	}
 
