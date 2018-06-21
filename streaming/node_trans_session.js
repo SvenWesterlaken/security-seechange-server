@@ -15,7 +15,6 @@ class NodeTransSession extends EventEmitter {
   constructor(conf) {
     super();
     this.conf = conf;
-    console.log(conf)
   }
 
   run() {
