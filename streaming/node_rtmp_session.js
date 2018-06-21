@@ -885,31 +885,31 @@ class NodeRtmpSession {
 		}
 
 
-		// Check timestamp is necessary
-		if (checkTimestamp) {
-			// Get timestamp from amf object
-			let timestampEncrypted = Buffer.from(invokeMessage.cmdObj.Timestamp, 'utf8');
-
-			// Decrypt timestamp
-			let timestampDecrypted = crypto.publicDecrypt(pubkey, timestampEncrypted);
-
-			// Get current timestamp in miliseconds
-			let currentTimestamp = new Date().getTime();
-
-			if (Math.abs(currentTimestamp - timestampDecrypted) > 60000 && noWrongTimestamps >= 10) {
-				// Difference between timestamps is greater than 1 minute
-				// Let's stop the stream
-				hashes = [];
-				noWrongTimestamps = 0;
-				Logger.log(`[rtmp disconnect] Stream stopped by server due to too many invalid timestamps`);
-
-				this.stop();
-			} else if (Math.abs(currentTimestamp - timestampDecrypted) > 60000) {
-				// Difference between timestamps is lesser than 1 minute
-				// The stream can continue
-				noWrongTimestamps++;
-			}
-		}
+		// // Check timestamp is necessary
+		// if (checkTimestamp) {
+		// 	// Get timestamp from amf object
+		// 	let timestampEncrypted = Buffer.from(invokeMessage.cmdObj.Timestamp, 'utf8');
+		//
+		// 	// Decrypt timestamp
+		// 	let timestampDecrypted = crypto.publicDecrypt(pubkey, timestampEncrypted);
+		//
+		// 	// Get current timestamp in miliseconds
+		// 	let currentTimestamp = new Date().getTime();
+		//
+		// 	if (Math.abs(currentTimestamp - timestampDecrypted) > 60000 && noWrongTimestamps >= 10) {
+		// 		// Difference between timestamps is greater than 1 minute
+		// 		// Let's stop the stream
+		// 		hashes = [];
+		// 		noWrongTimestamps = 0;
+		// 		Logger.log(`[rtmp disconnect] Stream stopped by server due to too many invalid timestamps`);
+		//
+		// 		this.stop();
+		// 	} else if (Math.abs(currentTimestamp - timestampDecrypted) > 60000) {
+		// 		// Difference between timestamps is lesser than 1 minute
+		// 		// The stream can continue
+		// 		noWrongTimestamps++;
+		// 	}
+		// }
 
 	}
 
