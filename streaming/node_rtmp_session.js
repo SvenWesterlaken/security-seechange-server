@@ -840,10 +840,12 @@ class NodeRtmpSession {
 		} else if (indexOfHash === -1) {
 			// Hash is not in array
 			// Let's add item to array
+
 			hashes.push(hash);
 		} else {
 			// Hash is in array
 			// Let's remove item from array
+
 			hashes.splice(indexOfHash, 1);
 		}
 	}
@@ -854,14 +856,14 @@ class NodeRtmpSession {
 			return;
 		}
 
-		let checkTimestamp = false;
+		// let checkTimestamp = false;
 
 		// Retrieve digital signature from amf object
 		let digitalSignature = Buffer.from(invokeMessage.cmdObj.DigitalSignature, 'base64');
 
 		// Decrypt digital signature
-		// let hash = crypto.publicDecrypt(pubkey, digitalSignature);
-		let hash = digitalSignature;
+		let hash = crypto.publicDecrypt(pubkey, digitalSignature);
+		hash = hash.toString('hex');
 
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
@@ -869,6 +871,7 @@ class NodeRtmpSession {
 		if(indexOfHash === -1 && hashes.length >= 10) {
 			// Hash is not in array and array is longer then 10 items long
 			// Time to stop the stream
+
 			hashes = [];
 			Logger.log(`[rtmp disconnect] Stream stopped by server due to too many invalid digital signatures`);
 
@@ -876,14 +879,15 @@ class NodeRtmpSession {
 		} else if (indexOfHash === -1) {
 			// Hash is not in array
 			// Let's add item to array
+
 			hashes.push(hash);
 		} else {
 			// Hash is in array
 			// Let's remove item from array
 			hashes.splice(indexOfHash, 1);
-			checkTimestamp = true;
-		}
 
+			// checkTimestamp = true;
+		}
 
 		// // Check timestamp is necessary
 		// if (checkTimestamp) {
