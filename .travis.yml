@@ -1,0 +1,28 @@
+language: node_js
+dist: trusty
+node_js:
+  - "node"
+addons:
+  sonarcloud:
+    organization: "matsgemmeke-github" # the key of the org you chose at step #3
+    token:
+      secure: 45d53550e000c157800fac804a339d596cc96dee # encrypted value of your token
+deploy:
+  provider: heroku
+  api_key:
+    secure: "YOUR ENCRYPTED API KEY"
+before_script:
+  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
+  - npm install chai chai-http mocha
+  - npm install axios-mock-adapter --save-dev
+  - npm install
+after_failure:
+  - cat MSBuild_*.failure.txt
+after_success:
+  - npm install gulp gulp-mocha gulp-istanbul run-sequence sonarqube-scanner
+  - npm run sonar
+script:
+  - npm test
+  - sonar-scanner
+services:
+  - mongodb
