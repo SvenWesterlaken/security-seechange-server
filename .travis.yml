@@ -10,7 +10,7 @@ addons:
 deploy:
   provider: heroku
   api_key:
-    secure: qn7Il4dslV/Q5EwITovQVEDk9E/v9bx/ZGZfH1ZtUNBoO+kQs5YyINbsfYfjEvjlZr8J6PokFNWWWW6IMaI2invP6A8pf12nmlxWA3qnDLlxk/xOPz8sT+XTRtYvQNX4Ij9nRMryria5L9aWGN92oNJ+av63Rt8qdYj7fVBsqafaCoJ7AcbMygCN49iN9+auABuSVtrMbu39zNBaedb1AcvT9DrkCcK8NEUhkMuI5CO1McQjNkOnD/jc372KjsvTL3wLshad8Vzv7X5PufGra+o4xTXtRfaENbRryUUn085J6MJtXXUkkiHoEfmy5xjVW9965GqrHGHq+MuiCZ5BvybKOnkk2v44t3Ahd736c3YkMtD2CbKejkWRN+HxNj7x2HHTxk7jGKMNzLfQHQjhBZPvyZNa0D+2NsLYjeNt/iC1v0r2PQUAK3khffbRrVpzGeEAt7RJH3gXMuA75Wj3lFVQ0Wx6wGc5JH2JCO1AgFez4be/4mj0zJ4OU1ty6qXjBm7Q0e1FKyBi/xbB9HC9P4mWXLNsPmwh9SFvklDmH9eBfey1frFdzQ+gYG5ohr2c16bBO0mIzGsLhnHkwxHHW0llH2f8C/eg+KFMPFEvHeb22yKBRHfmzO41kML6KZVuh7pixrnWkWqlFHNe8uQfp688CBQh28OE0RJZA2ZPvuk=
+    secure: a5311202-6b40-4ae1-9eea-f23c39840e08
   app: seechange-server
   on:
     all_branches: true
