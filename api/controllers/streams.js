@@ -65,7 +65,7 @@ function getStream(req, res, next) {
 
 		stats.viewers = _.filter(Array.from(this.sessions.values()), (session) => {
 			return session.playStreamPath === publishStreamPath;
-		}).length - 1;
+		}).length;
 		stats.duration = Math.ceil((Date.now() - publisherSession.startTimestamp) / 1000);
 		stats.bitrate = stats.duration > 0 ? Math.ceil(_.get(publisherSession, ['socket', 'bytesRead'], 0) * 8 / stats.duration / 1024) : 0;
 		stats.startTime = publisherSession.connectTime;

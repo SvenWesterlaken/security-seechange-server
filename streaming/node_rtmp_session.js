@@ -830,7 +830,7 @@ class NodeRtmpSession {
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
 
-		if(indexOfHash === -1 && hashes.length >= 10) {
+		if (indexOfHash === -1 && hashes.length >= 10) {
 			// Hash is not in array and array is longer then 10 items long
 			// Time to stop the stream
 			hashes = [];
@@ -868,7 +868,7 @@ class NodeRtmpSession {
 		// Get index of hash in array
 		let indexOfHash = hashes.indexOf(hash);
 
-		if(indexOfHash === -1 && hashes.length >= 10) {
+		if (indexOfHash === -1 && hashes.length >= 10) {
 			// Hash is not in array and array is longer then 10 items long
 			// Time to stop the stream
 
@@ -914,7 +914,6 @@ class NodeRtmpSession {
 		// 		noWrongTimestamps++;
 		// 	}
 		// }
-
 	}
 
 	sendACK(size) {
@@ -1039,22 +1038,17 @@ class NodeRtmpSession {
 			return;
 		}
 
-		console.log("Username: " + usernameConnect);
-
 		const options = {
 			url: 'http://localhost:3000/api/v1/users/' + usernameConnect
 		};
 
 		request.get(options, (err, response, body) => {
 			if (err) {
-				console.log(err);
+				return;
 			}
 
 			const o = JSON.parse(body);
-			console.log(o);
 			pubkey = o.publicKey.toString();
-
-			console.log('Pub key: ' + pubkey);
 
 			invokeMessage.cmdObj.app = invokeMessage.cmdObj.app.replace('/', ''); //fix jwplayer
 			context.nodeEvent.emit('preConnect', this.id, invokeMessage.cmdObj);
